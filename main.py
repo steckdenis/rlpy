@@ -22,28 +22,31 @@ if __name__ == '__main__':
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
 
     # Perform simulation steps
-    rewards = []
+    rewards = [0.0] * 5000
 
-    for it in range(5000):
-        steps = 0
+    for i in range(8):
+        print('Iteration %i' % i)
 
-        state = world.initial
-        last_reward = 0
-        cumulative_reward = 0
-        finished = False
+        for it in range(5000):
+            steps = 0
 
-        world.reset()
+            state = world.initial
+            last_reward = 0
+            cumulative_reward = 0
+            finished = False
 
-        while not finished:
-            action = learning.action(state, last_reward)
-            state, last_reward, finished = world.performAction(action)
+            world.reset()
 
-            cumulative_reward += last_reward
+            while not finished:
+                action = learning.action(state, last_reward)
+                state, last_reward, finished = world.performAction(action)
 
-        rewards.append(cumulative_reward)
+                cumulative_reward += last_reward
+
+            rewards[it] += cumulative_reward
 
     # Plot the results
-    plt.plot(rewards)
+    plt.plot([r / 8.0 for r in rewards])
     plt.xlabel('Iteration')
     plt.ylabel('Cumulative reward')
     plt.savefig('rewards.pdf')

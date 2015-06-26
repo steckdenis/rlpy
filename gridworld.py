@@ -54,10 +54,10 @@ class GridWorld(AbstractWorld):
 
         # Check for the grid size, obstacle or goal
         if pos == self.goal:
-            return (pos, 10, True)
+            return (pos, 10.0, True)
         elif pos[0] < 0 or pos[1] < 0 or pos[0] >= self.width or pos[1] >= self.height or pos == self.obstacle:
-            return (self._current_pos, -2, False)
+            return (self._current_pos, -2.0, False)
         else:
             self._current_pos = pos
 
-            return (pos, -1, False)
+            return (pos, -1.0, False)
