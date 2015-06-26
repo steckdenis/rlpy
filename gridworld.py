@@ -1,10 +1,12 @@
+import random
+
 from abstractworld import *
 
 class GridWorld(AbstractWorld):
     """ Grid of a given dimension with a starting position, a goal and an obstacle
     """
 
-    def __init__(self, width, height, initial, goal, obstacle):
+    def __init__(self, width, height, initial, goal, obstacle, stochastic):
         """ Create a new grid world.
 
             @param width Width of the world, in number of cells
@@ -19,6 +21,7 @@ class GridWorld(AbstractWorld):
         self.initial = initial
         self.goal = goal
         self.obstacle = obstacle
+        self.stochastic = stochastic
 
         self.reset()
 
@@ -31,6 +34,10 @@ class GridWorld(AbstractWorld):
     def performAction(self, action):
         # Compute the coordinates of the candidate new position
         pos = self._current_pos
+
+        # If stochasticity is enabled, perturb the action that will be performed
+        if self.stochastic and random.random() < 0.2:
+            action = random.randint(0, 3)
 
         if action == 0:
             # UP

@@ -10,7 +10,7 @@ from discretemodel import *
 if __name__ == '__main__':
 
     if 'gridworld' in sys.argv:
-        world = GridWorld(10, 5, (0, 2), (9, 2), (5, 2))
+        world = GridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
 
     if 'discrete' in sys.argv:
         model = DiscreteModel()
