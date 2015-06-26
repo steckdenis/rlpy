@@ -5,6 +5,10 @@ from abstractworld import *
 class GridWorld(AbstractWorld):
     """ Grid of a given dimension with a starting position, a goal and an obstacle
     """
+    UP = 0
+    RIGHT = 1
+    DOWN = 2
+    LEFT = 3
 
     def __init__(self, width, height, initial, goal, obstacle, stochastic):
         """ Create a new grid world.
@@ -14,6 +18,9 @@ class GridWorld(AbstractWorld):
             @param initial (x, y) coordinates of the initial position
             @param goal (x, y) coordinates of the goal
             @param obstacle (x, y) coordinates of the obstacle
+            @param stochastic True if noise has to be added to the actions taken
+            @param polar True if the agent must only be able to sense its orientation
+                   and distance to the closest wall
         """
 
         self.width = width
@@ -39,17 +46,13 @@ class GridWorld(AbstractWorld):
         if self.stochastic and random.random() < 0.2:
             action = random.randint(0, 3)
 
-        if action == 0:
-            # UP
+        if action == self.UP:
             pos = (pos[0], pos[1] - 1)
-        elif action == 1:
-            # DOWN
+        elif action == self.DOWN:
             pos = (pos[0], pos[1] + 1)
-        elif action == 2:
-            # LEFT
+        elif action == self.LEFT:
             pos = (pos[0] - 1, pos[1])
-        elif action == 3:
-            # RIGHT
+        elif action == self.RIGHT:
             pos = (pos[0] + 1, pos[1])
 
         # Check for the grid size, obstacle or goal
