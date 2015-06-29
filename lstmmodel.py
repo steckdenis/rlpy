@@ -45,7 +45,7 @@ class LSTMModel(AbstractModel):
             self._model.add(LSTM(len(state), self.nb_actions, activation='linear', inner_activation='hard_sigmoid'))
 
             print('Compiling model...')
-            self._model.compile(loss='binary_crossentropy', optimizer='sgd') # rmsprop
+            self._model.compile(loss='mse', optimizer='sgd') # rmsprop
             print('Compiled')
 
         # Update the data
