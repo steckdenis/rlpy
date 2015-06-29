@@ -31,11 +31,11 @@ class QLearning(AbstractLearning):
 
         # Update the Q-value of the last action that was taken
         if self._last_action is not None:
-            Q = self.model.value(self._last_state, self._last_action)
+            Q = self.model.values(self._last_state)[self._last_action]
 
             Q += self.alpha * (
                 last_reward +
-                self.gamma * max([self.model.value(state, a) for a in range(self.nb_actions)]) -
+                self.gamma * max(self.model.values(state)) -
                 Q
             )
 
@@ -45,9 +45,7 @@ class QLearning(AbstractLearning):
         action = None
         action_Q = 0
 
-        for a in range(self.nb_actions):
-            Q = self.model.value(state, a)
-
+        for a, Q in enumerate(self.model.values(state)):
             if action is None or Q > action_Q:
                 action = a
                 action_Q = Q
