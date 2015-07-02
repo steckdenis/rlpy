@@ -1,33 +1,41 @@
-from abstractmodel import *
+from abstractworld import *
 
-class OneOfNModel(AbstractModel):
+class OneOfNWorld(AbstractWorld):
     """ Take a discrete state (where each variable is an integer of finite range)
         and transforms it to a vector of ones and zeroes.
 
         [4, 5] -> [0, 0, 0, 0, 1, 0 ... , 0, 0, 0, 0, 0, 1, 0, ...]
     """
 
-    def __init__(self, nb_actions, model, ranges):
+    def __init__(self, world, ranges):
         """ Constructor.
 
-            @param model Model that is wrapped by this model
             @param ranges List of maximum values that the input state can take, 
                           for instance (10, 5) for a 10 by 5 grid.
         """
-        super().__init__(nb_actions)
 
-        self.model = model
+        self.world = world
         self.ranges = ranges
         self.output_dim = sum(ranges)
 
-    def nextEpisode(self):
-        self.model.nextEpisode()
+        self.initial = self.make_state(world.initial)
 
-    def values(self, state):
-        return self.model.values(self.make_state(state))
+    def nb_actions(self):
+        return self.world.nb_actions()
 
-    def setValue(self, state, action, value):
-        self.model.setValue(self.make_state(state), action, value)
+    def reset(self):
+        self.world.reset()
+
+    def performAction(self, action):
+        state, reward, finished = self.world.performAction(action)
+
+        # Adjust the state returned by the world
+        state = self.make_state(state)
+
+        return (state, reward, finished)
+
+    def plotModel(self, model):
+        self.world.plotModel(model)
 
     def make_state(self, state):
         """ Transform a state as explained in the docstring of this class

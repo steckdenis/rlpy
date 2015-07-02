@@ -4,7 +4,7 @@ class QLearning(AbstractLearning):
     """ Q-Learning learning strategy
     """
 
-    def __init__(self, nb_actions, model, alpha, gamma):
+    def __init__(self, nb_actions, alpha, gamma):
         """ Constructor.
 
             @param nb_actions Number of actions that are possible in the world
@@ -15,14 +15,10 @@ class QLearning(AbstractLearning):
         """
         super().__init__(nb_actions)
 
-        self.model = model
         self.alpha = alpha
         self.gamma = gamma
 
-        self._last_action = None
-        self._last_state = None
-
-    def action(self, state, last_reward):
+    def action(self, episode):
         """ Return the action index that should be performed given a given state
             observation and the reward received for last action.
 
@@ -30,28 +26,27 @@ class QLearning(AbstractLearning):
         """
 
         # Update the Q-value of the last action that was taken
-        if self._last_action is not None:
-            Q = self.model.values(self._last_state)[self._last_action]
+        if len(episode.actions) > 0:
+            last_action = episode.actions[-1]
+            last_reward = episode.rewards[-1]
+
+            Q = episode.values[-2][last_action]
 
             Q += self.alpha * (
                 last_reward +
-                self.gamma * max(self.model.values(state)) -
+                self.gamma * max(episode.values[-1]) -
                 Q
             )
 
-            self.model.setValue(self._last_state, self._last_action, Q)
+            episode.values[-2][last_action] = Q
 
         # Choose the best action
         action = None
         action_Q = 0
 
-        for a, Q in enumerate(self.model.values(state)):
+        for a, Q in enumerate(episode.values[-1]):
             if action is None or Q > action_Q:
                 action = a
                 action_Q = Q
-
-        # Update some state information
-        self._last_action = action
-        self._last_state = state
 
         return action

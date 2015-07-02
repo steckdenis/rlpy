@@ -1,6 +1,8 @@
+import matplotlib.pyplot as plt
 import random
 
 from abstractworld import *
+from episode import *
 
 class GridWorld(AbstractWorld):
     """ Grid of a given dimension with a starting position, a goal and an obstacle
@@ -64,3 +66,40 @@ class GridWorld(AbstractWorld):
             self._current_pos = pos
 
             return (pos, -1.0, False)
+
+    def plotModel(self, model):
+        """ Product PDF files that show graphically the values of a model that
+            is used to represent this world. This function does not know the meaning
+            of the values stored by the model.
+        """
+        X = []
+        Y = []
+        S = [[] for i in range(self.nb_actions())]
+
+        episode = Episode()
+
+        for y in range(self.height):
+            for x in range(self.width):
+                Y.append(x)
+                X.append(y)
+
+                # Dummy episode that allows to fetch one value from the model
+                episode.states.clear()
+                episode.addState((x, y))
+
+                values = model.values(episode)
+
+                for action, value in enumerate(values):
+                    s = abs(value)
+
+                    S[action].append(s)
+
+        # Plot
+        print('Plotting model')
+        plt.figure()
+
+        for a in range(self.nb_actions()):
+            plt.figure()
+            plt.scatter(X, Y, S)
+
+            plt.savefig('model_%i.pdf' % a)

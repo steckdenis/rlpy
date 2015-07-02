@@ -9,7 +9,7 @@ from egreedylearning import *
 from discretemodel import *
 from lstmmodel import *
 from nnetmodel import *
-from oneofnmodel import *
+from oneofnworld import *
 
 import theano
 
@@ -17,9 +17,9 @@ theano.config.allow_gc = False
 theano.config.linker = 'cvm_nogc'
 theano.config.openmp = True
 
-ITERATIONS = 1
 EPISODES = 1000
 MAX_TIMESTEPS = 5000
+BATCH_SIZE = 10
 
 if __name__ == '__main__':
 
@@ -36,44 +36,22 @@ if __name__ == '__main__':
         model = NnetModel(world.nb_actions(), 200)
 
     if 'oneofn' in sys.argv:
-        model = OneOfNModel(world.nb_actions(), model, [10, 5])
+        world = OneOfNWorld(world, [10, 5])
 
     if 'qlearning' in sys.argv:
-        learning = QLearning(world.nb_actions(), model, 0.2, 0.9)
+        learning = QLearning(world.nb_actions(), 0.2, 0.8)
 
     if 'egreedy' in sys.argv:
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
 
     # Perform simulation steps
-    rewards = [0.0] * EPISODES
+    episodes = world.run(model, learning, EPISODES, MAX_TIMESTEPS, BATCH_SIZE)
 
-    for i in range(ITERATIONS):
-        print('Iteration %i' % i)
+    world.plotModel(model)
 
-        for episode in range(EPISODES):
-            steps = 0
-
-            state = world.initial
-            last_reward = 0
-            cumulative_reward = 0
-            finished = False
-            steps = 0
-
-            world.reset()
-            model.nextEpisode()
-
-            while steps < MAX_TIMESTEPS and not finished:
-                action = learning.action(state, last_reward)
-                state, last_reward, finished = world.performAction(action)
-
-                cumulative_reward += last_reward
-                steps += 1
-
-            rewards[episode] += cumulative_reward
-            print(cumulative_reward)
-
-    # Plot the results
-    plt.plot([r / ITERATIONS for r in rewards])
+    # Plot the cumulative reward of all the episodes
+    plt.figure()
+    plt.plot([sum(e.rewards) for e in episodes])
     plt.xlabel('Iteration')
     plt.ylabel('Cumulative reward')
     plt.savefig('rewards.pdf')

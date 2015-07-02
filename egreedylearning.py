@@ -18,10 +18,10 @@ class EGreedyLearning(AbstractLearning):
         self.learning = learning
         self.epsilon = epsilon
 
-    def action(self, state, last_reward):
+    def action(self, episode):
         # Compute the exploitation step, and allow the learning algorithm to
         # keep track of the reward
-        action = self.learning.action(state, last_reward)
+        action = self.learning.action(episode)
 
         if random.random() < self.epsilon:
             # Exploration step

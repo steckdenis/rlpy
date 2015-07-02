@@ -11,9 +11,9 @@ class AbstractLearning(object):
 
         self.nb_actions = nb_actions
 
-    def action(self, state, last_reward):
-        """ Return the action index that should be performed given a given state
-            observation and the reward received for last action.
+    def action(self, episode):
+        """ Return the action index that should be performed given an history
+            (represented by an Episode object)
 
             @return An integer from 0 to nb_actions-1
 

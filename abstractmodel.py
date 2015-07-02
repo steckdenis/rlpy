@@ -9,22 +9,13 @@ class AbstractModel(object):
         """
         self.nb_actions = nb_actions
 
-    def setValue(self, state, action, value):
-        """ Set a value associated with a state and an action. If no concept
-            of action is relevant, setting this parameter to -1 allows the model
-            to disable its handling of actions
+    def learn(self, episodes):
+        """ Update the model using the episodes provided. Each episode contains
+            information about the states, actions and rewards visited by the agent.
         """
-        raise NotImplementedError('The model does not implement setValue()')
+        raise NotImplementedError('The model does not implement learn()')
 
-    def values(self, state):
-        """ Return the values associated with a state, for each action.
+    def values(self, episode):
+        """ Return the values associated with the last state of an episode
         """
-        raise NotImplementedError('The model does not implement value()')
-
-    def nextEpisode(self):
-        """ Called every time the agent is reset and a new episode is started.
-            Data that has been learned by the model should not be discarded, but
-            history-based models can use this information in order to flush their
-            history.
-        """
-        pass
+        raise NotImplementedError('The model does not implement values()')
