@@ -31,14 +31,9 @@ class QLearning(AbstractLearning):
             last_reward = episode.rewards[-1]
 
             Q = episode.values[-2][last_action]
+            error = last_reward + self.gamma * max(episode.values[-1]) - Q
 
-            Q += self.alpha * (
-                last_reward +
-                self.gamma * max(episode.values[-1]) -
-                Q
-            )
-
-            episode.values[-2][last_action] = Q
+            episode.values[-2][last_action] = Q + self.alpha * error
 
         # Choose the best action
         action = None
