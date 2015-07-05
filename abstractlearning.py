@@ -11,14 +11,11 @@ class AbstractLearning(object):
 
         self.nb_actions = nb_actions
 
-    def action(self, episode):
-        """ Return the action index that should be performed given an history
-            (represented by an Episode object)
+    def actions(self, episode):
+        """ Return a probability density over the actions that should be performed
+            given an history (represented by an Episode object)
 
-            @return An integer from 0 to nb_actions-1
-
-            @note No explaratory steps should be returned by the learning strategy,
-                  except if the strategy consist of adding exploratory steps to
-                  another one (EgreedyLearning(QLearning()) for instance).
+            @return A list of nb_actions elements, each value giving the probability
+                    that the corresponding action has to be taken.
         """
         raise NotImplementedError('The learning strategy does not implement action()')

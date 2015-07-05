@@ -7,6 +7,7 @@ from polargridworld import *
 from qlearning import *
 from advantagelearning import *
 from egreedylearning import *
+from softmaxlearning import *
 from discretemodel import *
 from lstmmodel import *
 from nnetmodel import *
@@ -46,6 +47,8 @@ if __name__ == '__main__':
 
     if 'egreedy' in sys.argv:
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
+    elif 'softmax' in sys.argv:
+        learning = SoftmaxLearning(world.nb_actions(), learning, 0.2)
 
     # Perform simulation steps
     episodes = world.run(model, learning, EPISODES, MAX_TIMESTEPS, BATCH_SIZE)

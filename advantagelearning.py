@@ -21,7 +21,11 @@ class AdvantageLearning(AbstractLearning):
         self.gamma = gamma
         self.kappa = kappa
 
-    def action(self, episode):
+    def actions(self, episode):
+        """ Return the advantage values of the actions. See the warning in QLearning
+            about the fact that those are not probabilities.
+        """
+
         # Update the Advantage value of the last action that was taken
         if len(episode.actions) > 0:
             last_action = episode.actions[-1]
@@ -36,13 +40,5 @@ class AdvantageLearning(AbstractLearning):
 
             episode.values[-2][last_action] = advantage + self.alpha * error
 
-        # Choose the best action, the one with the highest advantage value
-        action = None
-        action_A = 0
-
-        for a, A in enumerate(episode.values[-1]):
-            if action is None or A > action_A:
-                action = a
-                action_A = A
-
-        return action
+        # Probability to take any of the actions
+        return episode.values[-1]

@@ -1,3 +1,5 @@
+from numpy.random import choice
+
 from episode import *
 
 class AbstractWorld(object):
@@ -39,6 +41,7 @@ class AbstractWorld(object):
         """
         episodes = []
         learn_episodes = []
+        possible_actions = list(range(self.nb_actions()))
 
         try:
             for e in range(num_episodes):
@@ -54,7 +57,9 @@ class AbstractWorld(object):
 
                 # Perform the steps
                 while steps < max_episode_length and not finished:
-                    action = learning.action(episode)
+                    probas = learning.actions(episode)
+                    action = choice(possible_actions, p=probas)
+
                     state, reward, finished = self.performAction(action)
 
                     episode.addReward(reward)

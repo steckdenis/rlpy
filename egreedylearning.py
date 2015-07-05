@@ -18,14 +18,20 @@ class EGreedyLearning(AbstractLearning):
         self.learning = learning
         self.epsilon = epsilon
 
-    def action(self, episode):
-        # Compute the exploitation step, and allow the learning algorithm to
-        # keep track of the reward
-        action = self.learning.action(episode)
+    def actions(self, episode):
+        # The best action has a probability 1-epsilon to be taken, the others share
+        # a probability of epsilon
+        actions = self.learning.actions(episode)
 
-        if random.random() < self.epsilon:
-            # Exploration step
-            return random.randrange(0, self.nb_actions)
-        else:
-            # Exploitation step
-            return action
+        best_index = 0
+        best_proba = 0.0
+
+        for index, a in enumerate(actions):
+            if a > best_proba:
+                best_proba = a
+                best_index = index
+
+        actions = [self.epsilon / (self.nb_actions - 1) for a in actions]
+        actions[best_index] = 1.0 - self.epsilon
+
+        return actions

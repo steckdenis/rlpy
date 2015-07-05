@@ -18,11 +18,12 @@ class QLearning(AbstractLearning):
         self.alpha = alpha
         self.gamma = gamma
 
-    def action(self, episode):
-        """ Return the action index that should be performed given a given state
-            observation and the reward received for last action.
+    def actions(self, episode):
+        """ Return the scores of the actions.
 
-            @return An integer from 0 to nb_actions-1
+            @warning This is not a probability distribution (scores can be negative),
+                     use SoftmaxLearning or EgreedyLearning in order to get
+                     a real probability distribution !
         """
 
         # Update the Q-value of the last action that was taken
@@ -35,13 +36,5 @@ class QLearning(AbstractLearning):
 
             episode.values[-2][last_action] = Q + self.alpha * error
 
-        # Choose the best action
-        action = None
-        action_Q = 0
-
-        for a, Q in enumerate(episode.values[-1]):
-            if action is None or Q > action_Q:
-                action = a
-                action_Q = Q
-
-        return action
+        # Values of the actions
+        return episode.values[-1]
