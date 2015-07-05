@@ -14,7 +14,7 @@ from oneofnworld import *
 import theano
 
 theano.config.allow_gc = False
-theano.config.linker = 'cvm_nogc'
+theano.config.linker = 'cvm'
 theano.config.openmp = True
 
 EPISODES = 1000
