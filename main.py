@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from gridworld import *
 from polargridworld import *
 from qlearning import *
+from advantagelearning import *
 from egreedylearning import *
 from discretemodel import *
 from lstmmodel import *
@@ -40,6 +41,8 @@ if __name__ == '__main__':
 
     if 'qlearning' in sys.argv:
         learning = QLearning(world.nb_actions(), 0.2, 0.8)
+    elif 'advantage' in sys.argv:
+        learning = AdvantageLearning(world.nb_actions(), 0.2, 0.8, 0.5)     # Kappa of 0.1 as used in "Reinforcement Learning with Long Short-Term Memory"
 
     if 'egreedy' in sys.argv:
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
