@@ -29,11 +29,11 @@ class NnetModel(AbstractModel):
         if self._model is None:
             self._model = Sequential()
 
-            self._model.add(Dense(len(episodes[0].states[0]), self.hidden_neurons, init='uniform', activation='relu'))
-            self._model.add(Dense(self.hidden_neurons, self.nb_actions, init='uniform', activation='relu'))
+            self._model.add(Dense(len(episodes[0].states[0]), self.hidden_neurons, init='uniform', activation='tanh'))
+            self._model.add(Dense(self.hidden_neurons, self.nb_actions, init='uniform', activation='linear'))
 
             print('Compiling model...')
-            self._model.compile(loss='mse', optimizer='sgd') # rmsprop
+            self._model.compile(loss='mse', optimizer='rmsprop')
             print('Compiled')
 
         # Store the values of all the states encountered in all the episodes
@@ -45,11 +45,13 @@ class NnetModel(AbstractModel):
             values.extend(episode.values)
 
         # Train for these values
-        for i in range(5):
-            print(self._model.train(
-                self.make_data(states),
-                self.make_data(values)
-            ))
+        self._model.fit(
+            self.make_data(states),
+            self.make_data(values),
+            verbose=0,
+            batch_size=10,
+            nb_epoch=100
+        )
 
     def make_data(self, data):
         """ Return an ndarray having row per element in data and one column

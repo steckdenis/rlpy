@@ -16,7 +16,8 @@ from model.nnetmodel import *
 import theano
 
 theano.config.allow_gc = False
-theano.config.linker = 'cvm'
+theano.config.linker = 'cvm_nogc'
+theano.config.floatX = 'float32'
 theano.config.openmp = True
 
 EPISODES = 1000
@@ -35,7 +36,7 @@ if __name__ == '__main__':
     elif 'lstm' in sys.argv:
         model = LSTMModel(world.nb_actions())
     elif 'nnet' in sys.argv:
-        model = NnetModel(world.nb_actions(), 200)
+        model = NnetModel(world.nb_actions(), 500)
 
     if 'oneofn' in sys.argv:
         world = OneOfNWorld(world, [10, 5])
@@ -43,7 +44,7 @@ if __name__ == '__main__':
     if 'qlearning' in sys.argv:
         learning = QLearning(world.nb_actions(), 0.2, 0.8)
     elif 'advantage' in sys.argv:
-        learning = AdvantageLearning(world.nb_actions(), 0.2, 0.8, 0.5)     # Kappa of 0.1 as used in "Reinforcement Learning with Long Short-Term Memory"
+        learning = AdvantageLearning(world.nb_actions(), 0.2, 0.8, 0.3)
 
     if 'egreedy' in sys.argv:
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
@@ -53,11 +54,12 @@ if __name__ == '__main__':
     # Perform simulation steps
     episodes = world.run(model, learning, EPISODES, MAX_TIMESTEPS, BATCH_SIZE)
 
-    world.plotModel(model)
-
     # Plot the cumulative reward of all the episodes
     plt.figure()
     plt.plot([sum(e.rewards) for e in episodes])
     plt.xlabel('Iteration')
     plt.ylabel('Cumulative reward')
     plt.savefig('rewards.pdf')
+
+    # Plot the model
+    world.plotModel(model)
