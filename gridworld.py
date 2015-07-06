@@ -74,14 +74,14 @@ class GridWorld(AbstractWorld):
         """
         X = []
         Y = []
-        S = [[] for i in range(self.nb_actions())]
+        V = [[] for i in range(self.nb_actions())]
 
         episode = Episode()
 
         for y in range(self.height):
             for x in range(self.width):
-                Y.append(x)
-                X.append(y)
+                Y.append(y)
+                X.append(x)
 
                 # Dummy episode that allows to fetch one value from the model
                 episode.states.clear()
@@ -90,9 +90,7 @@ class GridWorld(AbstractWorld):
                 values = model.values(episode)
 
                 for action, value in enumerate(values):
-                    s = abs(value)
-
-                    S[action].append(s)
+                    V[action].append(value)
 
         # Plot
         print('Plotting model')
@@ -100,6 +98,7 @@ class GridWorld(AbstractWorld):
 
         for a in range(self.nb_actions()):
             plt.figure()
-            plt.scatter(X, Y, S)
+            plt.scatter(X, Y, s=40, c=V[a])
+            plt.colorbar()
 
             plt.savefig('model_%i.pdf' % a)
