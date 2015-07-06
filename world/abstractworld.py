@@ -2,9 +2,39 @@ from numpy.random import choice
 
 from .episode import *
 
+def encode_identity(state):
+    """ Identity encoding, does not change the state
+    """
+    return state
+
+def _encode_onehot(state, ranges):
+    """ Encode discrete state variables to a sequence of floats that each have
+        a value of 0 or 1. For instance, (2, 3) is encoded as (0, 0, 1, 0, ...,
+        0, 0, 0, 1, 0, ...).
+
+        @param state State to encode
+        @param ranges Ranges of the variables in the state (width and height of
+                      a grid for instance)
+    """
+    res = [0.0] * sum(ranges)
+    offset = 0
+
+    for index, value in enumerate(state):
+        res[offset + int(value)] = 1.0
+        offset += ranges[index]
+
+    return tuple(res)
+
+def make_encode_onehot(ranges):
+    """ Return an encode function that encodes states using the provided ranges
+    """
+    return lambda s: _encode_onehot(s, ranges)
+
 class AbstractWorld(object):
     """ Abstract world that receives actions and produces new states
     """
+    def __init__(self):
+        self.encoding = encode_identity
 
     def nb_actions(self):
         """ Return the number of actions that can be performed. This number
@@ -20,6 +50,9 @@ class AbstractWorld(object):
 
     def performAction(self, action):
         """ Perform an action on the world and return a tuple (state, reward, finished)
+
+            @note The state returned must not be encoded. AbstractWorld takes care
+                  of the encoding when needed.
         """
         raise NotImplementedError('The world does not implement performAction()')
 
@@ -48,7 +81,7 @@ class AbstractWorld(object):
                 episode = Episode()
 
                 # Initial state
-                episode.addState(self.initial)
+                episode.addState(self.encoding(self.initial))
                 episode.addValues(model.values(episode))
                 self.reset()
 
@@ -64,7 +97,7 @@ class AbstractWorld(object):
 
                     episode.addReward(reward)
                     episode.addAction(action)
-                    episode.addState(state)
+                    episode.addState(self.encoding(state))
                     episode.addValues(model.values(episode))
 
                     steps += 1

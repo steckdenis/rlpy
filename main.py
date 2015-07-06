@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 from world.gridworld import *
 from world.polargridworld import *
-from world.oneofnworld import *
 from learning.qlearning import *
 from learning.advantagelearning import *
 from learning.egreedylearning import *
@@ -39,7 +38,7 @@ if __name__ == '__main__':
         model = NnetModel(world.nb_actions(), 500)
 
     if 'oneofn' in sys.argv:
-        world = OneOfNWorld(world, [10, 5])
+        world.encoding = make_encode_onehot([10, 5])
 
     if 'qlearning' in sys.argv:
         learning = QLearning(world.nb_actions(), 0.2, 0.8)
