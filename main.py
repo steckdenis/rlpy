@@ -2,16 +2,16 @@
 import sys
 import matplotlib.pyplot as plt
 
-from gridworld import *
-from polargridworld import *
-from qlearning import *
-from advantagelearning import *
-from egreedylearning import *
-from softmaxlearning import *
-from discretemodel import *
-from lstmmodel import *
-from nnetmodel import *
-from oneofnworld import *
+from world.gridworld import *
+from world.polargridworld import *
+from world.oneofnworld import *
+from learning.qlearning import *
+from learning.advantagelearning import *
+from learning.egreedylearning import *
+from learning.softmaxlearning import *
+from model.discretemodel import *
+from model.lstmmodel import *
+from model.nnetmodel import *
 
 import theano
 

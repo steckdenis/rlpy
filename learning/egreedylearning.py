@@ -1,6 +1,6 @@
 import random
 
-from abstractlearning import *
+from .abstractlearning import *
 
 class EGreedyLearning(AbstractLearning):
     """ E-Greedy action selection

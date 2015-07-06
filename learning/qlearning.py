@@ -1,4 +1,4 @@
-from abstractlearning import *
+from .abstractlearning import *
 
 class QLearning(AbstractLearning):
     """ Q-Learning learning strategy

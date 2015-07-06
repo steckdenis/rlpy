@@ -2,7 +2,7 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Activation, Dropout
 from numpy import ndarray, array, float32
 
-from abstractmodel import *
+from .abstractmodel import *
 
 class NnetModel(AbstractModel):
     """ Simple perceptron with a single hidden layer

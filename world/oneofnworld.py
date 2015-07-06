@@ -1,4 +1,4 @@
-from abstractworld import *
+from .abstractworld import *
 
 class OneOfNWorld(AbstractWorld):
     """ Take a discrete state (where each variable is an integer of finite range)

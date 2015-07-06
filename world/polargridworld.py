@@ -1,6 +1,6 @@
 import random
 
-from gridworld import *
+from .gridworld import *
 
 class PolarGridWorld(GridWorld):
     """ Grid of a given dimension with a starting position, a goal and an obstacle.

@@ -1,6 +1,6 @@
 import math
 
-from abstractlearning import *
+from .abstractlearning import *
 
 class SoftmaxLearning(AbstractLearning):
     """ Softmax action selection

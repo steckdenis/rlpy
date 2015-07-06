@@ -3,7 +3,7 @@ from keras.layers.core import Dense
 from keras.layers.recurrent import LSTM
 from numpy import zeros, array, float32
 
-from abstractmodel import *
+from .abstractmodel import *
 
 class LSTMModel(AbstractModel):
     """ Model used for storing values associated with discrete states, with no

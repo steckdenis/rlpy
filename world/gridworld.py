@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import random
 
-from abstractworld import *
-from episode import *
+from .abstractworld import *
+from .episode import *
 
 class GridWorld(AbstractWorld):
     """ Grid of a given dimension with a starting position, a goal and an obstacle

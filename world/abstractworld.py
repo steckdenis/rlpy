@@ -1,6 +1,6 @@
 from numpy.random import choice
 
-from episode import *
+from .episode import *
 
 class AbstractWorld(object):
     """ Abstract world that receives actions and produces new states

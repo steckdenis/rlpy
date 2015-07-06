@@ -1,4 +1,4 @@
-from abstractlearning import *
+from .abstractlearning import *
 
 class AdvantageLearning(AbstractLearning):
     """ Advantage Learning learning strategy

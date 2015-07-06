@@ -1,4 +1,4 @@
-from abstractmodel import *
+from .abstractmodel import *
 
 class DiscreteModel(AbstractModel):
     """ Model used for storing values associated with discrete states, with no
