@@ -35,7 +35,7 @@ class FannNnetModel(AbstractModel):
             self._model = libfann.neural_net()
             self._model.create_sparse_array(1, (state_size, self.hidden_neurons, self.nb_actions))
             self._model.randomize_weights(-0.1, 0.1)
-            self._model.set_activation_function_layer(libfann.SIGMOID_SYMMETRIC_STEPWISE, 1)
+            self._model.set_activation_function_layer(libfann.GAUSSIAN, 1)
             self._model.set_activation_function_layer(libfann.LINEAR, 2)
 
         # Store the values of all the states encountered in all the episodes
