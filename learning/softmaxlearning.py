@@ -2,6 +2,16 @@ import math
 
 from .abstractlearning import *
 
+def _bounded_exp(x):
+    """ Exponential with clamping of big and small X values
+    """
+    if x < -20.0:
+        return 1e-9
+    elif x > 30.0:
+        return 1e13
+    else:
+        return math.exp(x)
+
 class SoftmaxLearning(AbstractLearning):
     """ Softmax action selection
     """
@@ -22,7 +32,7 @@ class SoftmaxLearning(AbstractLearning):
         values = self.learning.actions(episode)
 
         # Exponentials
-        vals = [math.exp(v / self.temperature) for v in values]
+        vals = [_bounded_exp(v / self.temperature) for v in values]
 
         # Normalized to a softmax distribution
         return [v / sum(vals) for v in vals]

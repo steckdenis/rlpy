@@ -10,14 +10,18 @@ from learning.egreedylearning import *
 from learning.softmaxlearning import *
 from model.discretemodel import *
 from model.lstmmodel import *
-from model.nnetmodel import *
+from model.kerasnnetmodel import *
+from model.fannnnetmodel import *
 
-import theano
+try:
+    import theano
 
-theano.config.allow_gc = False
-theano.config.linker = 'cvm_nogc'
-theano.config.floatX = 'float32'
-theano.config.openmp = True
+    theano.config.allow_gc = False
+    theano.config.linker = 'cvm_nogc'
+    theano.config.floatX = 'float32'
+    theano.config.openmp = True
+except ImportError:
+    print('Theano not installed, several nnet-based models will not be usable')
 
 EPISODES = 1000
 MAX_TIMESTEPS = 5000
@@ -34,8 +38,10 @@ if __name__ == '__main__':
         model = DiscreteModel(world.nb_actions())
     elif 'lstm' in sys.argv:
         model = LSTMModel(world.nb_actions())
-    elif 'nnet' in sys.argv:
-        model = NnetModel(world.nb_actions(), 500)
+    elif 'kerasnnet' in sys.argv:
+        model = KerasNnetModel(world.nb_actions(), 200)
+    elif 'fannnnet' in sys.argv:
+        model = FannNnetModel(world.nb_actions(), 200)
 
     if 'oneofn' in sys.argv:
         world.encoding = make_encode_onehot([10, 5])

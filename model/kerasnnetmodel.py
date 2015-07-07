@@ -1,11 +1,15 @@
-from keras.models import Sequential
-from keras.layers.core import Dense, Activation, Dropout
 from numpy import ndarray, array, float32
+
+try:
+    from keras.models import Sequential
+    from keras.layers.core import Dense, Activation, Dropout
+except ImportError:
+    print('Keras is not installed, do not use kerasnnetmodel')
 
 from .abstractmodel import *
 
-class NnetModel(AbstractModel):
-    """ Simple perceptron with a single hidden layer
+class KerasNnetModel(AbstractModel):
+    """ Simple perceptron with a single hidden layer (using Keras)
     """
 
     def __init__(self, nb_actions, hidden_neurons):
