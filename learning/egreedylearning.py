@@ -24,7 +24,7 @@ class EGreedyLearning(AbstractLearning):
         actions = self.learning.actions(episode)
 
         best_index = 0
-        best_proba = 0.0
+        best_proba = -1000000.0
 
         for index, a in enumerate(actions):
             if a > best_proba:

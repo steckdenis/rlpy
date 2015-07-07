@@ -5,10 +5,10 @@ from .abstractlearning import *
 def _bounded_exp(x):
     """ Exponential with clamping of big and small X values
     """
-    if x < -20.0:
-        return 1e-9
-    elif x > 30.0:
-        return 1e13
+    if x < -699:
+        return 1e-305
+    elif x > 699:
+        return 1e304
     else:
         return math.exp(x)
 

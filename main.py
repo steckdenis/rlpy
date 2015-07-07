@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 from world.gridworld import *
 from world.polargridworld import *
+from world.rlglueworld import *
 from learning.qlearning import *
 from learning.advantagelearning import *
 from learning.egreedylearning import *
@@ -33,6 +34,11 @@ if __name__ == '__main__':
         c = PolarGridWorld if 'polar' in sys.argv else GridWorld
 
         world = c(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
+    elif 'rlglue' in sys.argv:
+        # Let the RL-Glue experiment orchestrate everything
+        MAX_TIMESTEPS = 1000000000
+        EPISODES = 1000000000
+        world = RLGlueWorld()
 
     if 'discrete' in sys.argv:
         model = DiscreteModel(world.nb_actions())

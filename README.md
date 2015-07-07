@@ -15,3 +15,4 @@ This project uses several machine-learning Python libraries. Most of them are op
 * Theano (optional) : Available on PyPi (`Theano`)
 * Keras (optional) : Available on PyPi (`Keras`)
 * FANN2 (optional) : Available on PyPi (`fann2`)
+* rlglue-py3 (optional) : https://github.com/steckdenis/rlglue-py3 . Python bindings for Python exist for some time but were never ported to Python3
