@@ -42,7 +42,7 @@ if __name__ == '__main__':
     if 'discrete' in sys.argv:
         model = DiscreteModel(world.nb_actions())
     elif 'lstm' in sys.argv:
-        model = LSTMModel(world.nb_actions(), 20)
+        model = LSTMModel(world.nb_actions(), 20, 100)
     elif 'kerasnnet' in sys.argv:
         model = KerasNnetModel(world.nb_actions(), 200)
     elif 'fannnnet' in sys.argv:
