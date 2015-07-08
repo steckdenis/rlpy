@@ -11,6 +11,7 @@ from learning.egreedylearning import *
 from learning.softmaxlearning import *
 from model.discretemodel import *
 from model.lstmmodel import *
+from model.clstmmodel import *
 from model.kerasnnetmodel import *
 from model.fannnnetmodel import *
 
@@ -43,6 +44,8 @@ if __name__ == '__main__':
         model = DiscreteModel(world.nb_actions())
     elif 'lstm' in sys.argv:
         model = LSTMModel(world.nb_actions(), 20, 100)
+    elif 'clstm' in sys.argv:
+        model = CLSTMModel(world.nb_actions(), 100)
     elif 'kerasnnet' in sys.argv:
         model = KerasNnetModel(world.nb_actions(), 200)
     elif 'fannnnet' in sys.argv:

@@ -55,8 +55,7 @@ class HistoryModel(AbstractModel):
                 data[i, 0:length, :] = episode.states[t + 1 - length:t + 1]
                 values.append(episode.values[t])
 
-        # Train the model : the sequence of states 0 to n-1 must return the value v[-2],
-        # the one that has just been updated
+        # Train the model
         print('Training model')
         self.trainModel(data, self.make_data(values))
         print('done')
