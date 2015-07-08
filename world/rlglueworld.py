@@ -170,7 +170,7 @@ class RLGlueWorld(AbstractWorld):
 
         self.thread.start()
         self.actions = self.agent.waitForInitialized()      # Number of actions
-        self.initial = self.agent.waitForObservation()      # And first observation sent by RL-Glue
+        self.initial = self.agent.waitForObservation()[0]   # And first observation sent by RL-Glue
 
         print('Started!')
 
