@@ -19,7 +19,6 @@ try:
 
     theano.config.allow_gc = False
     theano.config.linker = 'cvm_nogc'
-    theano.config.floatX = 'float32'
     theano.config.openmp = True
 except ImportError:
     print('Theano not installed, several nnet-based models will not be usable')
@@ -43,7 +42,7 @@ if __name__ == '__main__':
     if 'discrete' in sys.argv:
         model = DiscreteModel(world.nb_actions())
     elif 'lstm' in sys.argv:
-        model = LSTMModel(world.nb_actions())
+        model = LSTMModel(world.nb_actions(), 20)
     elif 'kerasnnet' in sys.argv:
         model = KerasNnetModel(world.nb_actions(), 200)
     elif 'fannnnet' in sys.argv:

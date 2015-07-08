@@ -10,9 +10,17 @@ class LSTMModel(AbstractModel):
         function approximation.
     """
 
-    def __init__(self, nb_actions):
+    def __init__(self, nb_actions, history_length):
+        """ Constructor.
+
+            @param history_length The last @p history_length observations of every
+                                  subsequence of observations are used to predict
+                                  a value. For instance, the network may learn
+                                  an application o1o2o3 -> v1, o2o3o4 -> v2, etc.
+        """
         super().__init__(nb_actions)
 
+        self.history_length = history_length
         self._model = None
 
     def values(self, episode):
@@ -20,7 +28,9 @@ class LSTMModel(AbstractModel):
         if self._model is None:
             value = [0.0] * self.nb_actions
         else:
-            value = self._model.predict(self.make_data([episode.states]), verbose=0)[0]
+            nb_states = min(len(episode.states), self.history_length)
+
+            value = self._model.predict(self.make_data([episode.states[-nb_states:]]), verbose=0)[0]
 
         return value
 
@@ -30,25 +40,26 @@ class LSTMModel(AbstractModel):
         # Create the model of this action if it does not exist yet
         if self._model is None:
             self._model = Sequential()
-            self._model.add(LSTM(state_size, self.nb_actions, activation='relu', inner_activation='hard_sigmoid'))
+            self._model.add(LSTM(state_size, self.nb_actions, activation='linear', inner_activation='sigmoid'))
 
             print('Compiling model...')
-            self._model.compile(loss='mse', optimizer='sgd') # rmsprop
+            self._model.compile(loss='mse', optimizer='rmsprop')
             print('Compiled')
 
-        # Create an (episodes, max_length, state_dim) array
-        max_length = max([len(episode.states) for episode in episodes])
+        # Create an (total states encountered, history_length, state_dim) array
         total_length = sum([len(episode.states) for episode in episodes])
 
-        data = zeros(shape=(total_length, max_length, state_size), dtype=float32)
+        data = zeros(shape=(total_length, self.history_length, state_size), dtype=float32)
         values = []
         i = 0
 
         for e, episode in enumerate(episodes):
             for t in range(len(episode.states)):
-                # Observations 0..t of the episode, and the value that this
-                # sequence has to produce
-                data[i, 0:t+1, :] = episode.states[0:t+1]
+                # Observations t-history_length..t of the episode, and the value
+                # that this sequence has to produce
+                length = min(t + 1, self.history_length)
+
+                data[i, 0:length, :] = episode.states[t + 1 - length:t + 1]
                 values.append(episode.values[t])
 
         # Train the model : the sequence of states 0 to n-1 must return the value v[-2],
