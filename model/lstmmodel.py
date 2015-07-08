@@ -1,7 +1,11 @@
-from keras.models import Sequential
-from keras.layers.core import Dense
-from keras.layers.recurrent import LSTM
 from numpy import zeros, array, float32
+
+try:
+    from keras.models import Sequential
+    from keras.layers.core import Dense, TimeDistributedDense
+    from keras.layers.recurrent import LSTM
+except ImportError:
+    print('Keras is not installed, do not use lstmmodel')
 
 from .historymodel import *
 
@@ -23,7 +27,8 @@ class LSTMModel(HistoryModel):
         """ Create an LSTM-based neural network
         """
         model = Sequential()
-        model.add(LSTM(state_size, self.nb_actions, activation='linear', inner_activation='sigmoid'))
+        model.add(LSTM(state_size, self.hidden_neurons, activation='tanh', inner_activation='linear', truncate_gradient=self.history_length))
+        model.add(Dense(self.hidden_neurons, self.nb_actions, activation='linear'))
 
         print('Compiling model...')
         model.compile(loss='mse', optimizer='rmsprop')
@@ -47,7 +52,7 @@ class LSTMModel(HistoryModel):
         self._model.fit(
             data,
             values,
-            verbose=0,
-            batch_size=10,
-            nb_epoch=100
+            verbose=1,
+            batch_size=1,
+            nb_epoch=2
         )
