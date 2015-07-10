@@ -26,7 +26,7 @@ class HistoryModel(AbstractModel):
             value = [0.0] * self.nb_actions
         else:
             nb_states = min(len(episode.states), self.history_length)
-            observations = self.make_data([episode.states[-nb_states:]])
+            observations = self.make_data([list(episode.states)[-nb_states:]])
 
             value = self.getValues(observations)
 
@@ -47,12 +47,14 @@ class HistoryModel(AbstractModel):
         i = 0
 
         for e, episode in enumerate(episodes):
-            for t in range(len(episode.states)):
+            states = list(episode.states)
+
+            for t in range(len(states)):
                 # Observations t-history_length..t of the episode, and the value
                 # that this sequence has to produce
                 length = min(t + 1, self.history_length)
 
-                data[i, 0:length, :] = episode.states[t + 1 - length:t + 1]
+                data[i, 0:length, :] = states[t + 1 - length:t + 1]
                 values.append(episode.values[t])
 
                 i += 1
