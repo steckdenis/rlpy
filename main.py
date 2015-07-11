@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 from world.gridworld import *
 from world.polargridworld import *
+from world.pogridworld import *
 from world.rlglueworld import *
 from learning.qlearning import *
 from learning.advantagelearning import *
@@ -32,6 +33,7 @@ if __name__ == '__main__':
 
     if 'gridworld' in sys.argv:
         c = PolarGridWorld if 'polar' in sys.argv else GridWorld
+        c = POGridWorld if 'pomdp' in sys.argv else c
 
         world = c(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
     elif 'rlglue' in sys.argv:

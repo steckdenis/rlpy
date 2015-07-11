@@ -14,9 +14,6 @@ class PolarGridWorld(GridWorld):
 
     def __init__(self, width, height, initial, goal, obstacle, stochastic):
         """ Create a new grid world.
-
-            @param polar True if the agent must only be able to sense its orientation
-                   and distance to the closest wall
         """
         super().__init__(width, height, initial, goal, obstacle, stochastic)
 
