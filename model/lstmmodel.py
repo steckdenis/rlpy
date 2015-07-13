@@ -1,6 +1,6 @@
 try:
     from keras.models import Sequential
-    from keras.layers.core import Dense, TimeDistributedDense
+    from keras.layers.core import Dense
     from keras.layers.recurrent import LSTM
 except ImportError:
     print('Keras is not installed, do not use lstmmodel')

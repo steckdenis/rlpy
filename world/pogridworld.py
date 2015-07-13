@@ -16,4 +16,6 @@ class POGridWorld(GridWorld):
         # Normal action in the gridworld
         (pos, reward, finished) = super().performAction(action)
 
-        return ((pos[0],), reward, finished)
+        # Set Y to zero, so that only X can be observed but the state dimension
+        # remains compatible with GridWorld
+        return ((pos[0], 0.0), reward, finished)

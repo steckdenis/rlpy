@@ -12,6 +12,9 @@ from learning.egreedylearning import *
 from learning.softmaxlearning import *
 from model.discretemodel import *
 from model.grumodel import *
+from model.mut1model import *
+from model.mut2model import *
+from model.mut3model import *
 from model.lstmmodel import *
 from model.clstmmodel import *
 from model.kerasnnetmodel import *
@@ -50,6 +53,12 @@ if __name__ == '__main__':
         model = DiscreteModel(world.nb_actions())
     elif 'gru' in sys.argv:
         model = GRUModel(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
+    elif 'mut1' in sys.argv:
+        model = MUT1Model(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
+    elif 'mut2' in sys.argv:
+        model = MUT2Model(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
+    elif 'mut3' in sys.argv:
+        model = MUT3Model(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'lstm' in sys.argv:
         model = LSTMModel(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'clstm' in sys.argv:
