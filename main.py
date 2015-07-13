@@ -11,6 +11,7 @@ from learning.advantagelearning import *
 from learning.egreedylearning import *
 from learning.softmaxlearning import *
 from model.discretemodel import *
+from model.grumodel import *
 from model.lstmmodel import *
 from model.clstmmodel import *
 from model.kerasnnetmodel import *
@@ -29,6 +30,9 @@ EPISODES = 1000
 MAX_TIMESTEPS = 5000
 BATCH_SIZE = 10
 
+HISTORY_LENGTH = 10
+HIDDEN_NEURONS = 100
+
 if __name__ == '__main__':
 
     if 'gridworld' in sys.argv:
@@ -44,14 +48,16 @@ if __name__ == '__main__':
 
     if 'discrete' in sys.argv:
         model = DiscreteModel(world.nb_actions())
+    elif 'gru' in sys.argv:
+        model = GRUModel(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'lstm' in sys.argv:
-        model = LSTMModel(world.nb_actions(), 10, 100)
+        model = LSTMModel(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'clstm' in sys.argv:
-        model = CLSTMModel(world.nb_actions(), 100)
+        model = CLSTMModel(world.nb_actions(), HIDDEN_NEURONS)
     elif 'kerasnnet' in sys.argv:
-        model = KerasNnetModel(world.nb_actions(), 200)
+        model = KerasNnetModel(world.nb_actions(), HIDDEN_NEURONS)
     elif 'fannnnet' in sys.argv:
-        model = FannNnetModel(world.nb_actions(), 200)
+        model = FannNnetModel(world.nb_actions(), HIDDEN_NEURONS)
 
     if 'oneofn' in sys.argv:
         world.encoding = make_encode_onehot([10, 5])
