@@ -109,7 +109,7 @@ class AbstractWorld(object):
                 episodes.append(episode)
                 learn_episodes.append(episode)
 
-                print(e, sum(episode.rewards))
+                print(e, episode.cumulative_reward)
 
                 if len(learn_episodes) == batch_size:
                     model.learn(learn_episodes)

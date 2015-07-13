@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     # Plot the cumulative reward of all the episodes
     plt.figure()
-    plt.plot([sum(e.rewards) for e in episodes])
+    plt.plot([e.cumulative_reward for e in episodes])
     plt.xlabel('Iteration')
     plt.ylabel('Cumulative reward')
     plt.savefig('rewards.pdf')

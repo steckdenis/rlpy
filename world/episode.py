@@ -11,6 +11,7 @@ class Episode(object):
         self.values = collections.deque([], MAX_EPISODE_LENGTH)
         self.actions = collections.deque([], MAX_EPISODE_LENGTH)
         self.rewards = collections.deque([], MAX_EPISODE_LENGTH)
+        self.cumulative_reward = 0.0
 
     def addState(self, state):
         """ Add a state observation to the episode
@@ -28,6 +29,7 @@ class Episode(object):
             after having performed an action.
         """
         self.rewards.append(reward)
+        self.cumulative_reward += reward
 
     def addValues(self, values):
         """ Add values for actions of the last state.
