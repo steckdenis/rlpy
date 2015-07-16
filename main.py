@@ -29,8 +29,8 @@ try:
 except ImportError:
     print('Theano not installed, several nnet-based models will not be usable')
 
-EPISODES = 1000
-MAX_TIMESTEPS = 5000
+EPISODES = 5000
+MAX_TIMESTEPS = 500
 BATCH_SIZE = 10
 
 HISTORY_LENGTH = 10
@@ -39,10 +39,11 @@ HIDDEN_NEURONS = 100
 if __name__ == '__main__':
 
     if 'gridworld' in sys.argv:
-        c = PolarGridWorld if 'polar' in sys.argv else GridWorld
-        c = POGridWorld if 'pomdp' in sys.argv else c
-
-        world = c(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
+        world = GridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
+    elif 'pogridworld' in sys.argv:
+        world = POGridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
+    elif 'polargridworld' in sys.argv:
+        world = PolarGridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
     elif 'rlglue' in sys.argv:
         # Let the RL-Glue experiment orchestrate everything
         MAX_TIMESTEPS = 1000000000

@@ -81,9 +81,10 @@ class AbstractWorld(object):
                 episode = Episode()
 
                 # Initial state
+                self.reset()
+
                 episode.addState(self.encoding(self.initial))
                 episode.addValues(model.values(episode))
-                self.reset()
 
                 finished = False
                 steps = 0

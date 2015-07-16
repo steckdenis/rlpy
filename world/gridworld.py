@@ -39,7 +39,12 @@ class GridWorld(AbstractWorld):
         return 4
 
     def reset(self):
+        # The current position is set to the initial position
         self._current_pos = self.initial
+
+        # The initial position is updated if the world is stochastic (so that
+        # the next reset() call or episode will see the new initial position)
+        self.initial = (random.randrange(self.width), random.randrange(self.height))
 
     def performAction(self, action):
         # Compute the coordinates of the candidate new position

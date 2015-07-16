@@ -40,7 +40,7 @@ class KerasHistoryModel(HistoryModel):
         self._model.fit(
             data,
             values,
-            verbose=1,
+            verbose=0,
             batch_size=1,
             nb_epoch=4
         )

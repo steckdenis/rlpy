@@ -25,10 +25,6 @@ class PolarGridWorld(GridWorld):
         # Compute the coordinates of the candidate new position
         pos = self._current_pos
 
-        # If stochasticity is enabled, perturb the action that will be performed
-        if self.stochastic and random.random() < 0.2:
-            action = random.randint(0, 3)
-
         # Turning does not change the position
         if action == self.TURN_LEFT:
             self._current_dir = (self._current_dir + 1) % 4
