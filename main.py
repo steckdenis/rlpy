@@ -6,6 +6,7 @@ from world.gridworld import *
 from world.polargridworld import *
 from world.pogridworld import *
 from world.rlglueworld import *
+from world.rosworld import *
 from learning.qlearning import *
 from learning.advantagelearning import *
 from learning.egreedylearning import *
@@ -19,6 +20,11 @@ from model.lstmmodel import *
 from model.clstmmodel import *
 from model.kerasnnetmodel import *
 from model.fannnnetmodel import *
+
+try:
+    import std_msgs
+except ImportError:
+    pass
 
 try:
     import theano
@@ -49,6 +55,19 @@ if __name__ == '__main__':
         MAX_TIMESTEPS = 1000000000
         EPISODES = 1000000000
         world = RLGlueWorld()
+    elif 'ros' in sys.argv:
+        # Toy ROS experiment : inverted pendulum. The agent senses the angle
+        # and angular velocity of the pendulum, and can apply force on it.
+        subscriptions = [
+            {'path': '/vrep/jointAngle', 'type': std_msgs.msg.Float32},
+            {'path': '/vrep/jointVelocity', 'type': std_msgs.msg.Float32},
+            {'path': '/vrep/reward', 'type': std_msgs.msg.Float32},
+        ]
+        publications = [
+            {'path': '/vrep/jointTorque', 'type': std_msgs.msg.Float64, 'values': [-1.0, 0.0, 1.0]},
+        ]
+
+        world = ROSWorld(subscriptions, publications)
 
     if 'discrete' in sys.argv:
         model = DiscreteModel(world.nb_actions())
