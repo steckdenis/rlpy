@@ -18,7 +18,8 @@ class PolarGridWorld(GridWorld):
         super().__init__(width, height, initial, goal, obstacle, stochastic)
 
     def reset(self):
-        self._current_pos = self.initial
+        super().reset()
+
         self._current_dir = self.RIGHT
 
     def performAction(self, action):
