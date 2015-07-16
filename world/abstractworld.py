@@ -114,7 +114,7 @@ class AbstractWorld(object):
 
                 if len(learn_episodes) == batch_size:
                     model.learn(learn_episodes)
-                    learn_episodes.clear()
+                    learn_episodes = []
         except KeyboardInterrupt:
             # Allow the user to gracefully interrupt the learning process
             pass

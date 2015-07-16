@@ -163,7 +163,7 @@ class RLGlueWorld(AbstractWorld):
     def __init__(self):
         """ Create and launch a new RL-Glue agent
         """
-        super().__init__()
+        super(RLGlueWorld, self).__init__()
 
         self.agent = RLGlueAgent()
         self.thread = threading.Thread(target=(lambda: _start_rlglue_agent(self.agent)))

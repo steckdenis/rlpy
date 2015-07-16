@@ -23,7 +23,7 @@ class SoftmaxLearning(AbstractLearning):
             @param learning Learning method used when exploitation steps are taken
             @param temperature Temperature used to balance exploration/exploitation
         """
-        super().__init__(nb_actions)
+        super(SoftmaxLearning, self).__init__(nb_actions)
 
         self.learning = learning
         self.temperature = temperature

@@ -15,7 +15,7 @@ class AdvantageLearning(AbstractLearning):
             @param kappa The smaller this factor is, the strongest the bias towards
                          better-than-expected actions is.
         """
-        super().__init__(nb_actions)
+        super(AdvantageLearning, self).__init__(nb_actions)
 
         self.alpha = alpha
         self.gamma = gamma

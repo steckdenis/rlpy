@@ -9,7 +9,7 @@ class KerasHistoryModel(HistoryModel):
 
             @param hidden_neurons Number of neurons in the hidden layer
         """
-        super().__init__(nb_actions, history_length)
+        super(KerasHistoryModel, self).__init__(nb_actions, history_length)
 
         self.hidden_neurons = hidden_neurons
 

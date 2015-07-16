@@ -13,7 +13,7 @@ class MUT2Model(KerasHistoryModel):
     """
 
     def __init__(self, nb_actions, history_length, hidden_neurons):
-        super().__init__(nb_actions, history_length, hidden_neurons)
+        super(MUT2Model, self).__init__(nb_actions, history_length, hidden_neurons)
 
     def createKerasModel(self, state_size):
         """ Create an LSTM-based neural network

@@ -15,10 +15,10 @@ class PolarGridWorld(GridWorld):
     def __init__(self, width, height, initial, goal, obstacle, stochastic):
         """ Create a new grid world.
         """
-        super().__init__(width, height, initial, goal, obstacle, stochastic)
+        super(PolarGridWorld, self).__init__(width, height, initial, goal, obstacle, stochastic)
 
     def reset(self):
-        super().reset()
+        super(PolarGridWorld, self).reset()
 
         self._current_dir = self.RIGHT
 

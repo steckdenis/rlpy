@@ -10,11 +10,11 @@ class POGridWorld(GridWorld):
     def __init__(self, width, height, initial, goal, obstacle, stochastic):
         """ Create a new grid world.
         """
-        super().__init__(width, height, initial, goal, obstacle, stochastic)
+        super(POGridWorld, self).__init__(width, height, initial, goal, obstacle, stochastic)
 
     def performAction(self, action):
         # Normal action in the gridworld
-        (pos, reward, finished) = super().performAction(action)
+        (pos, reward, finished) = super(POGridWorld, self).performAction(action)
 
         # Set Y to zero, so that only X can be observed but the state dimension
         # remains compatible with GridWorld

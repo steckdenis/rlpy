@@ -24,7 +24,7 @@ class GridWorld(AbstractWorld):
             @param polar True if the agent must only be able to sense its orientation
                    and distance to the closest wall
         """
-        super().__init__()
+        super(GridWorld, self).__init__()
 
         self.width = width
         self.height = height

@@ -12,7 +12,7 @@ class FannNnetModel(AbstractModel):
     """
 
     def __init__(self, nb_actions, hidden_neurons):
-        super().__init__(nb_actions)
+        super(FannNnetModel, self).__init__(nb_actions)
 
         self.hidden_neurons = hidden_neurons
         self._model = None

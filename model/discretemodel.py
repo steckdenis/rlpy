@@ -6,7 +6,7 @@ class DiscreteModel(AbstractModel):
     """
 
     def __init__(self, nb_actions):
-        super().__init__(nb_actions)
+        super(DiscreteModel, self).__init__(nb_actions)
 
         self._data = {}
 

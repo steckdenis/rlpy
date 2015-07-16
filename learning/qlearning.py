@@ -13,7 +13,7 @@ class QLearning(AbstractLearning):
             @param alpha Learning factor
             @param gamma Discount factor
         """
-        super().__init__(nb_actions)
+        super(QLearning, self).__init__(nb_actions)
 
         self.alpha = alpha
         self.gamma = gamma

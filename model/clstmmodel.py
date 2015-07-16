@@ -16,7 +16,7 @@ class CLSTMModel(AbstractModel):
 
             @param hidden_neurons Number of neurons in the hidden layer
         """
-        super().__init__(nb_actions)
+        super(CLSTMModel, self).__init__(nb_actions)
 
         self.hidden_neurons = hidden_neurons
         self._values = zeros(shape=(1, 1, 1), dtype=float32)

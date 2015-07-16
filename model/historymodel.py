@@ -15,7 +15,7 @@ class HistoryModel(AbstractModel):
                                   a value. For instance, the network may learn
                                   an application o1o2o3 -> v1, o2o3o4 -> v2, etc.
         """
-        super().__init__(nb_actions)
+        super(HistoryModel, self).__init__(nb_actions)
 
         self.history_length = history_length
         self._model = None

@@ -13,7 +13,7 @@ class EGreedyLearning(AbstractLearning):
             @param learning Learning method used when exploitation steps are taken
             @param epsilon Probability that an exploratory step is taken
         """
-        super().__init__(nb_actions)
+        super(EGreedyLearning, self).__init__(nb_actions)
 
         self.learning = learning
         self.epsilon = epsilon
