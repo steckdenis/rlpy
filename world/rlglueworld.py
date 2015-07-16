@@ -1,6 +1,11 @@
 import threading
 
 try:
+    from queue import Queue
+except ImportError:
+    from Queue import Queue
+
+try:
     from rlglue.agent.Agent import Agent
     from rlglue.agent import AgentLoader as AgentLoader
     from rlglue.types import Action
@@ -19,46 +24,31 @@ class RLGlueAgent(baseclass):
     """
 
     def __init__(self):
-        self.lock = threading.Lock()
-
-        # Condition used to wait for the agent to have been initialized
-        self.init_condition = threading.Condition(self.lock)
-
-        # Condition used to wait for actions from the rlpy world
-        self.actions_condition = threading.Condition(self.lock)
-
-        # Condition used to wait for observations from the rl-glue world
-        self.observations_condition = threading.Condition(self.lock)
-
-        self.initialzed = False
-        self.min_action = 0
-        self.max_action = 0
-        self.nb_actions = 0
+        # Create queues for communication with the rlpy world
+        self.nb_actions_queue = Queue()
+        self.observations_queue = Queue()
+        self.actions_queue = Queue()
 
         self.last_state = None
-        self.last_reward = None
-        self.finished = False
-        self.next_action = None
 
     def agent_init(self, taskSpec):
-        with self.init_condition:
-            # Parse the taskSpec in order to find the number of possible
-            # actions.
-            taskSpec = str(taskSpec)
+        # Parse the taskSpec in order to find the number of possible actions.
+        taskSpec = str(taskSpec)
 
-            if 'ACTIONS INTS' not in taskSpec:
-                raise Exception('Only discrete actions are supported by this framework')
+        if 'ACTIONS INTS' not in taskSpec:
+            raise Exception('Only discrete actions are supported by this framework')
 
-            actions_ints = taskSpec.split('ACTIONS INTS')[1]                # VERSION ... ACTIONS INTS (0 3) REWARDS (0 10) ... -> (0 3) REWARDS (0 10) ...
-            cleaned_up = actions_ints.replace('(', ' ').replace(')', ' ')   # (0 3) REWARDS (0 10) ... -> 0 3 REWARDS 0 10 ...
-            parts = cleaned_up.split()[0:2]                                 # 0 3 REWARDS 0 10 -> ['0', '3']
+        actions_ints = taskSpec.split('ACTIONS INTS')[1]                # VERSION ... ACTIONS INTS (0 3) REWARDS (0 10) ... -> (0 3) REWARDS (0 10) ...
+        cleaned_up = actions_ints.replace('(', ' ').replace(')', ' ')   # (0 3) REWARDS (0 10) ... -> 0 3 REWARDS 0 10 ...
+        parts = cleaned_up.split()[0:2]                                 # 0 3 REWARDS 0 10 -> ['0', '3']
 
-            self.min_action = int(parts[0])
-            self.max_action = int(parts[1])
-            self.nb_actions = 1 + self.max_action - self.min_action
-            self.initialized = True
+        min_action = int(parts[0])
+        max_action = int(parts[1])
+        nb_actions = 1 + max_action - min_action
 
-            self.init_condition.notify_all()
+        # Put the number of actions in the nb_actions_queue so that the rlpy world
+        # can detect that the number of actions is now known
+        self.nb_actions_queue.put(nb_actions)
 
     def agent_start(self, observation):
         return self.doStep(observation, 0.0)
@@ -69,12 +59,7 @@ class RLGlueAgent(baseclass):
     def agent_end(self, reward):
         """ Place the agent in its "finished" state
         """
-
-        with self.observations_condition:
-            self.last_reward = reward
-            self.finished = True
-
-            self.observations_condition.notify_all()
+        self.observations_queue.put((self.last_state, reward, True))
 
     def agent_cleanup(self):
         pass
@@ -82,34 +67,22 @@ class RLGlueAgent(baseclass):
     def agent_message(self, inMessage):
         pass
 
-    def waitForInitialized(self):
+    def numberOfActions(self):
         """ Wait for the agent to be initialized and return the number of possible
             actions.
         """
-        with self.init_condition:
-            self.init_condition.wait_for(lambda: self.nb_actions > 0)
+        return self.nb_actions_queue.get()
 
-            return self.nb_actions
-
-    def waitForObservation(self):
+    def observation(self):
         """ Wait for an observation to be available, and return a (state, reward, finished)
             tuple
         """
-        with self.observations_condition:
-            self.observations_condition.wait_for(lambda: self.last_reward is not None)
-
-            return (self.last_state, self.last_reward, self.finished)
+        return self.observations_queue.get()
 
     def setAction(self, action):
         """ Inform the agent that it has to take the given action
         """
-        with self.actions_condition:
-            # Set the next action and invalidate the last reward, so that the rlpy
-            # world is forced to wait for the rl-glue world to update the observation
-            self.next_action = action
-            self.last_reward = None
-
-            self.actions_condition.notify_all()
+        self.actions_queue.put(action)
 
     def observationToState(self, observation):
         """ Transform an observation (sequence of integers, floats or chars) to
@@ -132,21 +105,15 @@ class RLGlueAgent(baseclass):
         """
 
         # Inform the rlpy world of the observation
-        with self.observations_condition:
-            self.last_state = self.observationToState(observation)
-            self.last_reward = reward
-            self.finished = False
+        self.last_state = self.observationToState(observation)
 
-            self.observations_condition.notify_all()
+        self.observations_queue.put((self.last_state, reward, False))
 
-        # Wait for instructions about the first action to perform
-        with self.actions_condition:
-            self.actions_condition.wait_for(lambda: self.next_action is not None)
+        # Perform the next action
+        action = Action()
+        action.intArray = [self.actions_queue.get()]
 
-            action = Action()
-            action.intArray = [self.next_action]
-
-            return action
+        return action
 
 def _start_rlglue_agent(agent):
     """ Start an RL-Glue agent and execute its event loop
@@ -172,8 +139,8 @@ class RLGlueWorld(AbstractWorld):
         print('Starting RL-Glue thread...')
 
         self.thread.start()
-        self.actions = self.agent.waitForInitialized()      # Number of actions
-        self.initial = self.agent.waitForObservation()[0]   # And first observation sent by RL-Glue
+        self.actions = self.agent.numberOfActions()
+        self.initial = self.agent.observation()[0]                              # First observation sent by RL-Glue
 
         print('Started!')
 
@@ -186,8 +153,7 @@ class RLGlueWorld(AbstractWorld):
     def performAction(self, action):
         # Perform the action and wait for the next observation
         self.agent.setAction(action)
-
-        return self.agent.waitForObservation()
+        return self.agent.observation()
 
     def plotModel(self, model):
         print('An RL-Glue agent knows nothing about its world and cannot plot it, use an RL-Glue visualization tool')
