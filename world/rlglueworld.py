@@ -5,13 +5,16 @@ try:
     from rlglue.agent import AgentLoader as AgentLoader
     from rlglue.types import Action
     from rlglue.types import Observation
+
+    baseclass = Agent
 except:
     print('RL-Glue (Python3 version) is not installed')
+    baseclass = object
 
 from .abstractworld import *
 from .episode import *
 
-class RLGlueAgent(Agent):
+class RLGlueAgent(baseclass):
     """ RL-Glue agent that performs the actions it receives from rlpy
     """
 
