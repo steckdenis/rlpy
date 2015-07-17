@@ -3,7 +3,10 @@ from numpy import ndarray, array, float32
 try:
     from fann2 import libfann
 except ImportError:
-    print('FANN is not installed, do not use fannnnetmodel')
+    try:
+        from pyfann import libfann
+    except ImportError:
+        print('FANN is not installed, do not use fannnnetmodel')
 
 from .abstractmodel import *
 

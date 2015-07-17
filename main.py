@@ -38,6 +38,7 @@ except ImportError:
 EPISODES = 5000
 MAX_TIMESTEPS = 500
 BATCH_SIZE = 10
+DISCOUNT_FACTOR = 0.8
 
 HISTORY_LENGTH = 10
 HIDDEN_NEURONS = 100
@@ -55,9 +56,13 @@ if __name__ == '__main__':
         MAX_TIMESTEPS = 1000000000
         EPISODES = 1000000000
         world = RLGlueWorld()
-    elif 'ros' in sys.argv:
+    elif 'rospendulum' in sys.argv:
         # Toy ROS experiment : inverted pendulum. The agent senses the angle
         # and angular velocity of the pendulum, and can apply force on it.
+        MAX_TIMESTEPS = 1000
+        BATCH_SIZE = 1
+        DISOUNT_FACTOR = 0.95
+
         subscriptions = [
             {'path': '/vrep/jointAngle', 'type': std_msgs.msg.Float32},
             {'path': '/vrep/jointVelocity', 'type': std_msgs.msg.Float32},
@@ -92,9 +97,9 @@ if __name__ == '__main__':
         world.encoding = make_encode_onehot([10, 5])
 
     if 'qlearning' in sys.argv:
-        learning = QLearning(world.nb_actions(), 0.2, 0.8)
+        learning = QLearning(world.nb_actions(), 0.2, DISCOUNT_FACTOR)
     elif 'advantage' in sys.argv:
-        learning = AdvantageLearning(world.nb_actions(), 0.2, 0.8, 0.3)
+        learning = AdvantageLearning(world.nb_actions(), 0.2, DISCOUNT_FACTOR, 0.3)
 
     if 'egreedy' in sys.argv:
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
