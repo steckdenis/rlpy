@@ -69,39 +69,3 @@ class GridWorld(AbstractWorld):
             self._current_pos = pos
 
             return (pos, -1.0, False)
-
-    def plotModel(self, model):
-        """ Product PDF files that show graphically the values of a model that
-            is used to represent this world. This function does not know the meaning
-            of the values stored by the model.
-        """
-        X = []
-        Y = []
-        V = [[] for i in range(self.nb_actions())]
-
-        episode = Episode()
-
-        for y in range(self.height):
-            for x in range(self.width):
-                Y.append(y)
-                X.append(x)
-
-                # Dummy episode that allows to fetch one value from the model
-                episode.states.clear()
-                episode.addState(self.encoding((x, y)))
-
-                values = model.values(episode)
-
-                for action, value in enumerate(values):
-                    V[action].append(value)
-
-        # Plot
-        print('Plotting model')
-        plt.figure()
-
-        for a in range(self.nb_actions()):
-            plt.figure()
-            plt.scatter(X, Y, s=40, c=V[a])
-            plt.colorbar()
-
-            plt.savefig('model_%i.pdf' % a)

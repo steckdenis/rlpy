@@ -1,4 +1,7 @@
+import matplotlib.pyplot as plt
+
 from numpy.random import choice
+from numpy import arange
 
 from .episode import *
 
@@ -36,6 +39,9 @@ class AbstractWorld(object):
     def __init__(self):
         self.encoding = encode_identity
 
+        self._min_state = [1e20] * 1000         # This big vector will be truncated the first time a state is encountered un run()
+        self._max_state = [-1e20] * 1000
+
     def nb_actions(self):
         """ Return the number of actions that can be performed. This number
             cannot change during the lifetime of the world.
@@ -57,9 +63,69 @@ class AbstractWorld(object):
         raise NotImplementedError('The world does not implement performAction()')
 
     def plotModel(self, model):
-        """ Produce PDF files representing the given model in the current world.
+        """ Product PDF files that show graphically the values of a model that
+            is used to represent this world. This function does not know the meaning
+            of the values stored by the model.
         """
-        print('No plot produced for this model as it does not reimplement plotModel()')
+        X = []
+        Y = []
+        V = [[] for i in range(self.nb_actions())]
+
+        episode = Episode()
+        print('Plotting model')
+
+        if len(self._min_state) == 1:
+            # 1D world
+            mi = self._min_state[0]
+            ma = self._max_state[0]
+
+            for x in arange(mi, ma, (ma - mi) / 1000.0):
+                X.append(x)
+
+                episode.states.clear()
+                episode.addState(self.encoding((x,)))
+
+                values = model.values(episode)
+
+                for action, value in enumerate(values):
+                    V[action].append(value)
+
+            # Plot a line graph
+            for a in range(self.nb_actions()):
+                plt.figure()
+
+                plt.plot(X, V[a])
+                plt.savefig('model_%i.pdf' % a)
+        elif len(self._min_state) == 2:
+            # 2D world
+            miX = self._min_state[0]
+            maX = self._max_state[0]
+            miY = self._min_state[1]
+            maY = self._max_state[1]
+
+            for y in arange(miY, maY, (maY - miY) / 100.0):
+                for x in arange(miX, maX, (maX - miX) / 100.0):
+                    Y.append(y)
+                    X.append(x)
+
+                    # Dummy episode that allows to fetch one value from the model
+                    episode.states.clear()
+                    episode.addState(self.encoding((x, y)))
+
+                    values = model.values(episode)
+
+                    for action, value in enumerate(values):
+                        V[action].append(value)
+
+            # Plot a scatter plot
+            for a in range(self.nb_actions()):
+                plt.figure()
+
+                plt.scatter(X, Y, s=5, c=V[a], linewidths=(0,))
+                plt.colorbar()
+                plt.savefig('model_%i.pdf' % a)
+        else:
+            print('Unable to plot models of dimension 3 or above')
 
     def run(self, model, learning, num_episodes, max_episode_length, batch_size):
         """ Simulate an agent in this world.
@@ -95,6 +161,9 @@ class AbstractWorld(object):
                     action = choice(possible_actions, p=probas)
 
                     state, reward, finished = self.performAction(action)
+
+                    self._min_state = [min(a, b) for a, b in zip(self._min_state, state)]
+                    self._max_state = [max(a, b) for a, b in zip(self._max_state, state)]
 
                     episode.addReward(reward)
                     episode.addAction(action)
