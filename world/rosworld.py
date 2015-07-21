@@ -26,8 +26,10 @@ class ROSProxy(object):
         # Create the list of subscriptions so that the states can be
         # constructed from observations
         self.subscriptions = []
+        self.last_state = []
         
         for subscription in subscriptions:
+            self.last_state.append(0.0)
             sub = {}
             
             sub['index'] = len(self.subscriptions)  # Index in the state vector
@@ -60,9 +62,6 @@ class ROSProxy(object):
                 self.actions.append((pub, value))
                 
             self.publications.append(pub)
-            
-        # Default dummy observation
-        self.last_state = [0.0] * len(self.subscriptions)
 
     def run(self):
         # Let ROS spin
@@ -77,7 +76,7 @@ class ROSProxy(object):
         self.last_state[sub['index']] = float(data.data)
 
         self.observations_queue.put((
-            self.last_state[:-1],
+            tuple(self.last_state[:-1]),
             self.last_state[-1],
             False
         ))
@@ -136,7 +135,7 @@ class ROSWorld(AbstractWorld):
         super(ROSWorld, self).__init__()
 
         # Initialize ROS (in the Python main thread)
-        rospy.init_node(name='rlpy', anonymous=True)
+        rospy.init_node(name='rlpy', anonymous=True, disable_signals=True)
         
         # Let the proxy initialize everything else
         self.proxy = ROSProxy(subscriptions, publications)
