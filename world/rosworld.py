@@ -113,7 +113,7 @@ class ROSProxy(object):
         """ Number of possible actions, built based on the publications of this
             agent.
         """
-        return len(self.actions)
+        return len(self.actions) - 1    # The last action resets the world
 
     def observation(self):
         """ Wait for an observation to be available, and return a (state,
@@ -175,7 +175,8 @@ class ROSWorld(AbstractWorld):
         return self.actions
 
     def reset(self):
-        pass
+        # Perform the last action (one that is not exposed through nb_actions)
+        self.proxy.setAction(self.actions)
 
     def performAction(self, action):
         # Perform the action and wait for the next observation

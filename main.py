@@ -91,6 +91,7 @@ if __name__ == '__main__':
         ]
         publications = [
             {'path': '/vrep/jointTorque', 'type': std_msgs.msg.Float64, 'values': [-1.0, 0.0, 1.0]},
+            {'path': '/vrep/reset', 'type': std_msgs.msg.Int32, 'values': [1]},
         ]
 
         world = ROSWorld(subscriptions, publications)
