@@ -155,5 +155,3 @@ class RLGlueWorld(AbstractWorld):
         self.agent.setAction(action)
         return self.agent.observation()
 
-    def plotModel(self, model):
-        print('An RL-Glue agent knows nothing about its world and cannot plot it, use an RL-Glue visualization tool')

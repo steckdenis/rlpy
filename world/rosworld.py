@@ -162,5 +162,3 @@ class ROSWorld(AbstractWorld):
 
         return self.proxy.observation()
 
-    def plotModel(self, model):
-        print('A ROS agent knows nothing about its world and cannot plot it, use a ROS visualization tool')
