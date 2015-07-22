@@ -16,3 +16,5 @@ This project uses several machine-learning Python libraries. Most of them are op
 * Keras (optional) : Available on PyPi (`Keras`)
 * FANN2 (optional) : Available on PyPi (`fann2`)
 * rlglue-py3 (optional) : https://github.com/steckdenis/rlglue-py3 . Python bindings for Python exist for some time but were never ported to Python3
+* rlglue-py (optional) : Python 2 version of rl-glue, can be used if you run this code with Python 2
+* rospy (optional) : Allows ROSWorld to be used. If your rospy is based on Python 2, then this project will also have to be run using Python 2.
