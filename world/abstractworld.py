@@ -20,6 +20,7 @@
 # THE SOFTWARE.
 
 import matplotlib.pyplot as plt
+import math
 
 from numpy.random import choice
 from numpy import arange
@@ -44,7 +45,7 @@ def _encode_onehot(state, ranges):
     offset = 0
 
     for index, value in enumerate(state):
-        res[offset + int(value)] = 1.0
+        res[offset + int(value + 0.49)] = 1.0
         offset += ranges[index]
 
     return tuple(res)
