@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 from world.gridworld import *
 from world.polargridworld import *
 from world.pogridworld import *
+from world.tmazeworld import *
 from world.rlglueworld import *
 from world.rosworld import *
 from learning.qlearning import *
@@ -72,6 +73,8 @@ if __name__ == '__main__':
         world = POGridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
     elif 'polargridworld' in sys.argv:
         world = PolarGridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
+    elif 'tmaze' in sys.argv:
+        world = TMazeWorld(12, 2)
     elif 'rlglue' in sys.argv:
         # Let the RL-Glue experiment orchestrate everything
         MAX_TIMESTEPS = 1000000000
