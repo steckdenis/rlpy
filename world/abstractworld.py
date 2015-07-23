@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import math
 
 from numpy.random import choice
-from numpy import arange
+from numpy import arange, ndarray
 
 from .episode import *
 
@@ -89,15 +89,14 @@ class AbstractWorld(object):
             is used to represent this world. This function does not know the meaning
             of the values stored by the model.
         """
-        X = []
-        Y = []
-        V = [[] for i in range(self.nb_actions())]
-
         episode = Episode()
         print('Plotting model')
 
         if len(self._min_state) == 1:
             # 1D world
+            X = []
+            V = [[] for i in range(self.nb_actions())]
+
             mi = self._min_state[0]
             ma = self._max_state[0]
 
@@ -125,11 +124,13 @@ class AbstractWorld(object):
             miY = self._min_state[1]
             maY = self._max_state[1]
 
-            for y in arange(miY, maY, (maY - miY) / 100.0):
-                for x in arange(miX, maX, (maX - miX) / 100.0):
-                    Y.append(y)
-                    X.append(x)
+            V = [ndarray(shape=(100, 100)) for i in range(self.nb_actions())]
+            py = 0
 
+            for y in arange(miY, maY, (maY - miY) / 100.0):
+                px = 0
+
+                for x in arange(miX, maX, (maX - miX) / 100.0):
                     # Dummy episode that allows to fetch one value from the model
                     episode.states.clear()
                     episode.addState(self.encoding((x, y)))
@@ -137,13 +138,16 @@ class AbstractWorld(object):
                     values = model.values(episode)
 
                     for action, value in enumerate(values):
-                        V[action].append(value)
+                        V[action][py, px] = value
+
+                    px += 1
+                py += 1
 
             # Plot a scatter plot
             for a in range(self.nb_actions()):
                 plt.figure()
 
-                plt.scatter(X, Y, s=5, c=V[a], linewidths=(0,))
+                plt.pcolormesh(V[a])
                 plt.colorbar()
                 plt.savefig('model_%i.pdf' % a)
         else:
