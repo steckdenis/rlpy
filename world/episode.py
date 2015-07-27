@@ -19,15 +19,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import collections
+
+MAX_EPISODE_LENGTH = 100
+
 class Episode(object):
     """ Sequence of actions and observations that correspond to a learning episode
     """
 
     def __init__(self):
-        self.states = []
-        self.values = []
-        self.actions = []
-        self.rewards = []
+        self.states = collections.deque([], MAX_EPISODE_LENGTH)
+        self.values = collections.deque([], MAX_EPISODE_LENGTH)
+        self.actions = collections.deque([], MAX_EPISODE_LENGTH)
+        self.rewards = collections.deque([], MAX_EPISODE_LENGTH)
         self.cumulative_reward = 0.0
 
     def addState(self, state):

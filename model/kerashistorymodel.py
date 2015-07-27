@@ -63,5 +63,5 @@ class KerasHistoryModel(HistoryModel):
             values,
             verbose=0,
             batch_size=1,
-            nb_epoch=1
+            nb_epoch=4
         )
