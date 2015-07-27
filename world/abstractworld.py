@@ -92,7 +92,7 @@ class AbstractWorld(object):
         episode = Episode()
         print('Plotting model')
 
-        if len(self._min_state) == 1:
+        if len(self._min_state) == 1 or self._min_state[1] == self._max_state[1]:
             # 1D world
             X = []
             V = [[] for i in range(self.nb_actions())]
@@ -124,13 +124,13 @@ class AbstractWorld(object):
             miY = self._min_state[1]
             maY = self._max_state[1]
 
-            V = [ndarray(shape=(100, 100)) for i in range(self.nb_actions())]
+            V = [ndarray(shape=(50, 50)) for i in range(self.nb_actions())]
             py = 0
 
-            for y in arange(miY, maY, (maY - miY) / 100.0):
+            for y in arange(miY, maY, (maY - miY) / 50.0):
                 px = 0
 
-                for x in arange(miX, maX, (maX - miX) / 100.0):
+                for x in arange(miX, maX, (maX - miX) / 50.0):
                     # Dummy episode that allows to fetch one value from the model
                     episode.states.clear()
                     episode.addState(self.encoding((x, y)))
