@@ -70,13 +70,13 @@ class TMazeWorld(AbstractWorld):
         pos = (self._current_pos, 0)
 
         if action == self.UP:
-            pos = (pos[0], pos[1] - 1)
+            pos = (pos[0], -1)
         elif action == self.DOWN:
-            pos = (pos[0], pos[1] + 1)
+            pos = (pos[0], 1)
         elif action == self.LEFT:
-            pos = (pos[0] - 1, pos[1])
+            pos = (pos[0] - 1, 0)
         elif action == self.RIGHT:
-            pos = (pos[0] + 1, pos[1])
+            pos = (pos[0] + 1, 0)
 
         # Check the validity of the position
         if pos[0] == self.length - 1 and pos[1] == -1:
@@ -101,7 +101,7 @@ class TMazeWorld(AbstractWorld):
     def makeState(self):
         if self._timestep <= self.info_time:
             # Provide information about the target direction
-            return (self._current_pos, self._target_dir)
+            return (self._current_pos, self._target_dir + 1)
         else:
             # Provide no hint
             return (self._current_pos, 0)

@@ -60,7 +60,7 @@ except ImportError:
 EPISODES = 5000
 MAX_TIMESTEPS = 500
 BATCH_SIZE = 10
-DISCOUNT_FACTOR = 0.8
+DISCOUNT_FACTOR = 0.90
 
 HISTORY_LENGTH = 10
 HIDDEN_NEURONS = 100
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     elif 'polargridworld' in sys.argv:
         world = PolarGridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
     elif 'tmaze' in sys.argv:
-        world = TMazeWorld(8, 2)
+        world = TMazeWorld(8, 1)
     elif 'rlglue' in sys.argv:
         # Let the RL-Glue experiment orchestrate everything
         MAX_TIMESTEPS = 1000000000
