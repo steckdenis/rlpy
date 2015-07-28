@@ -74,7 +74,7 @@ class KerasNnetModel(AbstractModel):
             self.make_data(states),
             self.make_data(values),
             verbose=0,
-            batch_size=1,
+            batch_size=20,
             nb_epoch=2
         )
 
