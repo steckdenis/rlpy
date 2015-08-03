@@ -33,6 +33,7 @@ from learning.qlearning import *
 from learning.advantagelearning import *
 from learning.egreedylearning import *
 from learning.softmaxlearning import *
+from learning.adaptivesoftmaxlearning import *
 from model.discretemodel import *
 from model.grumodel import *
 from model.mut1model import *
@@ -130,6 +131,8 @@ if __name__ == '__main__':
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
     elif 'softmax' in sys.argv:
         learning = SoftmaxLearning(world.nb_actions(), learning, 0.2)
+    elif 'adaptivesoftmax' in sys.argv:
+        learning = AdaptiveSoftmaxLearning(world.nb_actions(), learning, HIDDEN_NEURONS, 0.1)
 
     # Perform simulation steps
     episodes = world.run(model, learning, EPISODES, MAX_TIMESTEPS, BATCH_SIZE)

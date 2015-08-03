@@ -56,6 +56,8 @@ class QLearning(AbstractLearning):
             error = last_reward + self.gamma * max(episode.values[-1]) - Q
 
             episode.values[-2][last_action] = Q + self.alpha * error
+        else:
+            error = 0.0
 
         # Values of the actions
-        return episode.values[-1]
+        return episode.values[-1], error

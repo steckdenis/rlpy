@@ -50,10 +50,17 @@ class SoftmaxLearning(AbstractLearning):
         self.temperature = temperature
 
     def actions(self, episode):
-        values = self.learning.actions(episode)
+        values, error = self.learning.actions(episode)
+        self.adjustTemperature(episode, error)
 
         # Exponentials
         vals = [_bounded_exp(v / self.temperature) for v in values]
 
         # Normalized to a softmax distribution
-        return [v / sum(vals) for v in vals]
+        return [v / sum(vals) for v in vals], error
+
+    def adjustTemperature(self, episode, td_error):
+        """ Dynamically adjust the Softmax temperature based on an episode (that
+            has already been processed by the wrapped model) and its TD error.
+        """
+        pass

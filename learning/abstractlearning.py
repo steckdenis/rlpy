@@ -36,7 +36,8 @@ class AbstractLearning(object):
         """ Return a probability density over the actions that should be performed
             given an history (represented by an Episode object)
 
-            @return A list of nb_actions elements, each value giving the probability
-                    that the corresponding action has to be taken.
+            @return A tuple of two elements : a list of nb_actions elements,
+                    each value giving the probability that the corresponding
+                    action has to be taken, and the TD error.
         """
         raise NotImplementedError('The learning strategy does not implement action()')

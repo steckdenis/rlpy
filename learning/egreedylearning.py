@@ -42,7 +42,7 @@ class EGreedyLearning(AbstractLearning):
     def actions(self, episode):
         # The best action has a probability 1-epsilon to be taken, the others share
         # a probability of epsilon
-        actions = self.learning.actions(episode)
+        actions, error = self.learning.actions(episode)
 
         best_index = 0
         best_proba = -1000000.0
@@ -55,4 +55,4 @@ class EGreedyLearning(AbstractLearning):
         actions = [self.epsilon / (self.nb_actions - 1) for a in actions]
         actions[best_index] = 1.0 - self.epsilon
 
-        return actions
+        return actions, error

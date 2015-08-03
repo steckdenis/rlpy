@@ -60,6 +60,8 @@ class AdvantageLearning(AbstractLearning):
                     advantage
 
             episode.values[-2][last_action] = advantage + self.alpha * error
+        else:
+            error = 0.0
 
         # Probability to take any of the actions
-        return episode.values[-1]
+        return episode.values[-1], error

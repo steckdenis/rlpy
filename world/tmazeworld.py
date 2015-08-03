@@ -83,12 +83,12 @@ class TMazeWorld(AbstractWorld):
             # Up part of the T junction
             self._current_pos = pos[0]
 
-            return (self.makeState(), 100.0 if self._target_dir == self.UP else 0.0, True)
+            return (self.makeState(), 10.0 if self._target_dir == self.UP else 0.0, True)
         elif pos[0] == self.length - 1 and pos[1] == 1:
             # Down part of the T junction
             self._current_pos = pos[0]
 
-            return (self.makeState(), 100.0 if self._target_dir == self.DOWN else 0.0, True)
+            return (self.makeState(), 10.0 if self._target_dir == self.DOWN else 0.0, True)
         elif pos[1] == -1 or pos[1] == 1 or pos[0] < 0 or pos[0] >= self.length:
             # Overflow
             return (self.makeState(), -2.0, False)

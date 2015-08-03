@@ -183,7 +183,7 @@ class AbstractWorld(object):
 
                 # Perform the steps
                 while steps < max_episode_length and not finished:
-                    probas = learning.actions(episode)
+                    probas, _ = learning.actions(episode)
                     action = choice(possible_actions, p=probas)
 
                     state, reward, finished = self.performAction(action)
