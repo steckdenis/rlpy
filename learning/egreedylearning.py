@@ -56,3 +56,6 @@ class EGreedyLearning(AbstractLearning):
         actions[best_index] = 1.0 - self.epsilon
 
         return actions, error
+
+    def finishEpisode(self, episode):
+        self.learning.finishEpisode(episode)

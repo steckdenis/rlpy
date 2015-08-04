@@ -64,3 +64,6 @@ class SoftmaxLearning(AbstractLearning):
             has already been processed by the wrapped model) and its TD error.
         """
         pass
+
+    def finishEpisode(self, episode):
+        self.learning.finishEpisode(episode)

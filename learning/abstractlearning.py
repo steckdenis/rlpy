@@ -41,3 +41,10 @@ class AbstractLearning(object):
                     action has to be taken, and the TD error.
         """
         raise NotImplementedError('The learning strategy does not implement action()')
+
+    def finishEpisode(self, episode):
+        """ Called when an episode is finished. The episode contains the last state
+            and reward observed. By default, this method calls actions() so that
+            an on-line update rule can be applied for the last time step.
+        """
+        self.actions(episode)

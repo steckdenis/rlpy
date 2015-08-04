@@ -199,7 +199,7 @@ class AbstractWorld(object):
                     steps += 1
 
                 # Let the learning update the Q-value of the last state visited
-                learning.actions(episode)
+                learning.finishEpisode(episode)
 
                 # If a batch has been finished, learn
                 episodes.append(episode)

@@ -30,7 +30,9 @@ from world.tmazeworld import *
 from world.rlglueworld import *
 from world.rosworld import *
 from learning.qlearning import *
+from learning.batchqlearning import *
 from learning.advantagelearning import *
+from learning.batchadvantagelearning import *
 from learning.egreedylearning import *
 from learning.softmaxlearning import *
 from learning.adaptivesoftmaxlearning import *
@@ -58,7 +60,7 @@ try:
 except ImportError:
     print('Theano not installed, several nnet-based models will not be usable')
 
-EPISODES = 5000
+EPISODES = 50000
 MAX_TIMESTEPS = 500
 BATCH_SIZE = 10
 DISCOUNT_FACTOR = 0.90
@@ -124,8 +126,12 @@ if __name__ == '__main__':
 
     if 'qlearning' in sys.argv:
         learning = QLearning(world.nb_actions(), 0.2, DISCOUNT_FACTOR)
+    elif 'batchqlearning' in sys.argv:
+        learning = BatchQLearning(world.nb_actions(), 0.6, DISCOUNT_FACTOR)
     elif 'advantage' in sys.argv:
         learning = AdvantageLearning(world.nb_actions(), 0.2, DISCOUNT_FACTOR, 0.3)
+    elif 'batchadvantage' in sys.argv:
+        learning = BatchAdvantageLearning(world.nb_actions(), 0.6, DISCOUNT_FACTOR, 0.3)
 
     if 'egreedy' in sys.argv:
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
