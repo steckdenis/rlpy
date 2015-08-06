@@ -68,31 +68,33 @@ class AdaptiveSoftmaxLearning(SoftmaxLearning):
         updated_temperature = abs(td_error) + self.discount_factor * current_temperature
 
         if len(episode.states) > 1:
-            # Update the model
+            # Store the updated value in the current batch
             previous_state = episode.states[-2]
 
             self._states.append(previous_state)
             self._values.append([updated_temperature])
 
-            # Learn in batch for speed and accuracy
-            if len(self._states) > 100:
-                self._model.fit(
-                    self.make_data(self._states),
-                    self.make_data(self._values),
-                    verbose=0,
-                    batch_size=10,
-                    nb_epoch=10
-                )
-
-                # Stats
-                temps = [v[0] for v in self._values]
-                print('Average temperature for batch', sum(temps) / len(temps))
-
-                self._states = []
-                self._values = []
-
         # Use the new tempoerature (without allowing it to be too small)
         self.temperature = max(current_temperature, 0.2)
+
+    def finishEpisode(self, episode):
+        super(AdaptiveSoftmaxLearning, self).finishEpisode(episode)
+
+        # Store the new temperature values at the end of the episode
+        self._model.fit(
+            self.make_data(self._states),
+            self.make_data(self._values),
+            verbose=0,
+            batch_size=10,
+            nb_epoch=10
+        )
+
+        # Stats
+        temps = [v[0] for v in self._values]
+        print('Average temperature for episode', sum(temps) / len(temps))
+
+        self._states = []
+        self._values = []
 
     def make_data(self, data):
         """ Return an ndarray having row per element in data and one column

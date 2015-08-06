@@ -60,13 +60,14 @@ try:
 except ImportError:
     print('Theano not installed, several nnet-based models will not be usable')
 
-EPISODES = 50000
+EPISODES = 5000
 MAX_TIMESTEPS = 500
 BATCH_SIZE = 10
 DISCOUNT_FACTOR = 0.90
 
 HISTORY_LENGTH = 10
 HIDDEN_NEURONS = 100
+SOFTMAX_TEMP = 0.5
 
 if __name__ == '__main__':
 
@@ -77,6 +78,8 @@ if __name__ == '__main__':
     elif 'polargridworld' in sys.argv:
         world = PolarGridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
     elif 'tmaze' in sys.argv:
+        EPISODES = 50000
+
         world = TMazeWorld(8, 1)
     elif 'rlglue' in sys.argv:
         # Let the RL-Glue experiment orchestrate everything
@@ -136,7 +139,7 @@ if __name__ == '__main__':
     if 'egreedy' in sys.argv:
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
     elif 'softmax' in sys.argv:
-        learning = SoftmaxLearning(world.nb_actions(), learning, 0.2)
+        learning = SoftmaxLearning(world.nb_actions(), learning, SOFTMAX_TEMP)
     elif 'adaptivesoftmax' in sys.argv:
         learning = AdaptiveSoftmaxLearning(world.nb_actions(), learning, HIDDEN_NEURONS, 0.1)
 

@@ -96,7 +96,7 @@ class TMazeWorld(AbstractWorld):
             # Simple movement
             self._current_pos = pos[0]
 
-            return (self.makeState(), 0.0, False)
+            return (self.makeState(), -1.0, False)
 
     def makeState(self):
         if self._timestep <= self.info_time:
