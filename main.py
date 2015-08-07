@@ -139,6 +139,8 @@ if __name__ == '__main__':
     elif 'batchadvantage' in sys.argv:
         learning = BatchAdvantageLearning(world.nb_actions(), 0.6, DISCOUNT_FACTOR, 0.3)
 
+    baselearning = learning         # Learning without any wrapper
+
     if 'egreedy' in sys.argv:
         learning = EGreedyLearning(world.nb_actions(), learning, 0.1)
     elif 'softmax' in sys.argv:
@@ -153,7 +155,7 @@ if __name__ == '__main__':
             world,
             makemodel,
             model,
-            learning,
+            SoftmaxLearning(world.nb_actions(), baselearning, 3.0),
             50
         )
 

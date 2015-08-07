@@ -29,7 +29,7 @@ class TExploreModel(AbstractModel):
     """
 
     def __init__(self, world, makeworldmodel, model, learning, rollout_length):
-        """ Initialize a new TExploreModel and start its rollout thread.
+        """ Initialize a new TExploreModel.
 
             @param world "real" world which will be approximated.
             @param makeworldmodel Function that creates models for ModelWorld,
@@ -49,7 +49,6 @@ class TExploreModel(AbstractModel):
         self._model = model
         self._learning = learning
         self._rollout_length = rollout_length
-        self._last_episode = None
 
     def values(self, episode):
         state = episode.states[-1]
