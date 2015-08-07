@@ -40,3 +40,9 @@ class AbstractModel(object):
         """ Return the values associated with the last state of an episode
         """
         raise NotImplementedError('The model does not implement values()')
+
+    def valuesForPlotting(self, episode):
+        """ Return the values associated with the last state of an episode, possibly
+            "faster" version used when plotting a model.
+        """
+        return self.values(episode)

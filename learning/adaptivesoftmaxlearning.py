@@ -80,6 +80,9 @@ class AdaptiveSoftmaxLearning(SoftmaxLearning):
     def finishEpisode(self, episode):
         super(AdaptiveSoftmaxLearning, self).finishEpisode(episode)
 
+        if len(self._states) == 0:
+            return
+
         # Store the new temperature values at the end of the episode
         self._model.fit(
             self.make_data(self._states),
@@ -88,10 +91,6 @@ class AdaptiveSoftmaxLearning(SoftmaxLearning):
             batch_size=10,
             nb_epoch=10
         )
-
-        # Stats
-        temps = [v[0] for v in self._values]
-        print('Average temperature for episode', sum(temps) / len(temps))
 
         self._states = []
         self._values = []

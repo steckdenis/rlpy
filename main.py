@@ -45,6 +45,7 @@ from model.lstmmodel import *
 from model.clstmmodel import *
 from model.kerasnnetmodel import *
 from model.fannnnetmodel import *
+from texplore.texploremodel import *
 
 try:
     import std_msgs
@@ -106,23 +107,25 @@ if __name__ == '__main__':
         world = ROSWorld(subscriptions, publications)
 
     if 'discrete' in sys.argv:
-        model = DiscreteModel(world.nb_actions())
+        makemodel = lambda n: DiscreteModel(n)
     elif 'gru' in sys.argv:
-        model = GRUModel(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
+        makemodel = lambda n: GRUModel(n, HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'mut1' in sys.argv:
-        model = MUT1Model(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
+        makemodel = lambda n: MUT1Model(n, HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'mut2' in sys.argv:
-        model = MUT2Model(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
+        makemodel = lambda n: MUT2Model(n, HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'mut3' in sys.argv:
-        model = MUT3Model(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
+        makemodel = lambda n: MUT3Model(n, HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'lstm' in sys.argv:
-        model = LSTMModel(world.nb_actions(), HISTORY_LENGTH, HIDDEN_NEURONS)
+        makemodel = lambda n: LSTMModel(n, HISTORY_LENGTH, HIDDEN_NEURONS)
     elif 'clstm' in sys.argv:
-        model = CLSTMModel(world.nb_actions(), HIDDEN_NEURONS)
+        makemodel = lambda n: CLSTMModel(n, HIDDEN_NEURONS)
     elif 'kerasnnet' in sys.argv:
-        model = KerasNnetModel(world.nb_actions(), HIDDEN_NEURONS)
+        makemodel = lambda n: KerasNnetModel(n, HIDDEN_NEURONS)
     elif 'fannnnet' in sys.argv:
-        model = FannNnetModel(world.nb_actions(), HIDDEN_NEURONS)
+        makemodel = lambda n: FannNnetModel(n, HIDDEN_NEURONS)
+
+    model = makemodel(world.nb_actions())
 
     if 'oneofn' in sys.argv:
         world.encoding = make_encode_onehot([10, 5])
@@ -142,6 +145,17 @@ if __name__ == '__main__':
         learning = SoftmaxLearning(world.nb_actions(), learning, SOFTMAX_TEMP)
     elif 'adaptivesoftmax' in sys.argv:
         learning = AdaptiveSoftmaxLearning(world.nb_actions(), learning, HIDDEN_NEURONS, 0.1)
+
+    if 'texplore' in sys.argv:
+        BATCH_SIZE = 1
+
+        model = TExploreModel(
+            world,
+            makemodel,
+            model,
+            learning,
+            50
+        )
 
     # Perform simulation steps
     episodes = world.run(model, learning, EPISODES, MAX_TIMESTEPS, BATCH_SIZE)

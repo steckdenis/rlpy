@@ -21,6 +21,7 @@
 
 import matplotlib.pyplot as plt
 import math
+import copy
 
 from numpy.random import choice
 from numpy import arange, ndarray
@@ -84,6 +85,13 @@ class AbstractWorld(object):
         """
         raise NotImplementedError('The world does not implement performAction()')
 
+    def performActionSupervised(self, action, target_state):
+        """ Tell the model to perform an action and to end in a given state. This
+            method is called when run() is given an initial episode and replays
+            it so that the world is synchronized with the last state of the episode.
+        """
+        self.performAction(action)
+
     def plotModel(self, model):
         """ Product PDF files that show graphically the values of a model that
             is used to represent this world. This function does not know the meaning
@@ -106,7 +114,7 @@ class AbstractWorld(object):
                 episode.states.clear()
                 episode.addState(self.encoding((x,)))
 
-                values = model.values(episode)
+                values = model.valuesForPlotting(episode)
 
                 for action, value in enumerate(values):
                     V[action].append(value)
@@ -135,7 +143,7 @@ class AbstractWorld(object):
                     episode.states.clear()
                     episode.addState(self.encoding((x, y)))
 
-                    values = model.values(episode)
+                    values = model.valuesForPlotting(episode)
 
                     for action, value in enumerate(values):
                         V[action][py, px] = value
@@ -153,7 +161,7 @@ class AbstractWorld(object):
         else:
             print('Unable to plot models of dimension 3 or above')
 
-    def run(self, model, learning, num_episodes, max_episode_length, batch_size):
+    def run(self, model, learning, num_episodes, max_episode_length, batch_size, verbose=True, start_episode=None):
         """ Simulate an agent in this world.
 
             @param learning Learning algorithm used by the agent
@@ -161,6 +169,12 @@ class AbstractWorld(object):
             @param num_episodes Number of episodes that are simulated
             @param max_episode_length Maximum number of steps allowed per episode
             @param batch_size Off-policy learning happens once after every @p batch_size episodes
+            @param verbose True to display (episode, cumulative_reward) stats
+                                in the console. False not to display anything
+            @param start_episode If not None, each episode in this run starts at
+                                 start_episode. This allows to "pre-initialize"
+                                 the episodes, for instance by providing past
+                                 history.
 
             @return A list of Episode objects
         """
@@ -170,12 +184,22 @@ class AbstractWorld(object):
 
         try:
             for e in range(num_episodes):
-                episode = Episode()
-
                 # Initial state
-                self.reset()
+                if start_episode is None:
+                    episode = Episode()
+                    episode.addState(self.encoding(self.initial))
 
-                episode.addState(self.encoding(self.initial))
+                    self.reset()
+                else:
+                    episode = copy.deepcopy(start_episode)
+
+                    # Replay the episode in the world
+                    self.initial = episode.states[0]
+                    self.reset()
+
+                    for action, target in zip(episode.actions, list(episode.states)[1:]):
+                        self.performActionSupervised(action, target)
+
                 episode.addValues(model.values(episode))
 
                 finished = False
@@ -205,13 +229,15 @@ class AbstractWorld(object):
                 episodes.append(episode)
                 learn_episodes.append(episode)
 
-                print(e, episode.cumulative_reward)
+                if verbose:
+                    print(e, episode.cumulative_reward)
 
                 if len(learn_episodes) == batch_size:
                     model.learn(learn_episodes)
                     learn_episodes = []
         except KeyboardInterrupt:
             # Allow the user to gracefully interrupt the learning process
-            pass
+            if not verbose:
+                raise
 
         return episodes
