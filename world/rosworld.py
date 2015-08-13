@@ -60,6 +60,7 @@ class ROSProxy(object):
                 self.subscription_callback,
                 sub
             )
+            sub['f'] = subscription.get('f', lambda x: x)
             
             self.subscriptions.append(sub)
 
@@ -94,7 +95,10 @@ class ROSProxy(object):
             published
         """
         # Update the state. The last element of the state is the reward
-        self.last_state[sub['index']] = float(data.data)
+        index = sub['index']
+        f = sub['f']
+
+        self.last_state[index] = float(f(data.data))
 
         self.observations_queue.put((
             tuple(self.last_state[:-1]),

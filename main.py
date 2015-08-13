@@ -107,6 +107,45 @@ if __name__ == '__main__':
         ]
 
         world = ROSWorld(subscriptions, publications)
+    elif 'roskhepera' in sys.argv:
+        # ROS experiment : the agent senses readings from IR sensors on a Khepera
+        # robot and controls its two motors. The goal is to reach the red cube.
+        MAX_TIMESTEPS = 1000
+        EPISODES = 10000
+        BATCH_SIZE = 1
+        DISOUNT_FACTOR = 0.98
+
+        subscriptions = [
+            {'path': '/vrep/state%i' % i, 'type': std_msgs.msg.Float32} for i in range(1, 6)
+        ] + [
+            {'path': '/vrep/reward', 'type': std_msgs.msg.Float32}
+        ]
+
+        publications = [
+            {'path': '/vrep/motorLeft', 'type': std_msgs.msg.Float32, 'values': [-5.0, 0.0, 5.0]},
+            {'path': '/vrep/motorRight', 'type': std_msgs.msg.Float32, 'values': [-5.0, 0.0, 5.0, 5.0]}, # last value : dummy reset
+        ]
+
+        world = ROSWorld(subscriptions, publications)
+    elif 'rosrealkhepera' in sys.argv:
+        # Controlling a real Khepera robot in the lab, using the roskhepera bridge
+        MAX_TIMESTEPS = 1000
+        EPISODES = 10000
+        BATCH_SIZE = 1
+        DISOUNT_FACTOR = 0.90
+
+        subscriptions = [
+            {'path': '/blueghost/leftSpeed', 'type': std_msgs.msg.Int32},
+            {'path': '/blueghost/rightSpeed', 'type': std_msgs.msg.Int32},
+            {'path': '/blueghost/ultrasonicDistanceCM2', 'type': std_msgs.msg.Int32, 'f': (lambda x: x / 400.0)}
+        ]
+
+        publications = [
+            {'path': '/blueghost/leftTorque', 'type': std_msgs.msg.Float32, 'values': [0.02, 0.0, -0.02]},
+            {'path': '/blueghost/rightTorque', 'type': std_msgs.msg.Float32, 'values': [0.02, 0.0, -0.02, 0.0]}, # last value : dummy reset
+        ]
+
+        world = ROSWorld(subscriptions, publications)
 
     if 'discrete' in sys.argv:
         makemodel = lambda n: DiscreteModel(n)
