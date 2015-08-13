@@ -21,6 +21,7 @@
 # THE SOFTWARE.
 
 import sys
+import random
 import matplotlib.pyplot as plt
 
 from world.gridworld import *
@@ -56,7 +57,7 @@ try:
     import theano
 
     theano.config.allow_gc = False
-    theano.config.linker = 'cvm_nogc'
+    theano.config.linker = 'cvm'
     theano.config.openmp = True
 except ImportError:
     print('Theano not installed, several nnet-based models will not be usable')
@@ -71,6 +72,7 @@ HIDDEN_NEURONS = 100
 SOFTMAX_TEMP = 0.5
 
 if __name__ == '__main__':
+    random.seed()
 
     if 'gridworld' in sys.argv:
         world = GridWorld(10, 5, (0, 2), (9, 2), (5, 2), 'stochastic' in sys.argv)
@@ -164,7 +166,7 @@ if __name__ == '__main__':
 
     # Plot the cumulative reward of all the episodes
     plt.figure()
-    plt.plot([e.cumulative_reward for e in episodes])
+    plt.plot([e.cumulative_reward for e in episodes], '.')
     plt.xlabel('Iteration')
     plt.ylabel('Cumulative reward')
     plt.savefig('rewards.pdf')
