@@ -234,6 +234,14 @@ class AbstractWorld(object):
 
                 if len(learn_episodes) == batch_size:
                     model.learn(learn_episodes)
+
+                    # Make learnt episodes smaller, we only want to keep their cumulative reward
+                    for le in learn_episodes:
+                        le.states = None
+                        le.values = None
+                        le.rewards = None
+                        le.actions = None
+
                     learn_episodes = []
         except KeyboardInterrupt:
             # Allow the user to gracefully interrupt the learning process
