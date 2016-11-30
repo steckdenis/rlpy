@@ -7,10 +7,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,7 +40,7 @@ class GRUModel(KerasHistoryModel):
         """ Create an LSTM-based neural network
         """
         model = Sequential()
-        model.add(GRU(state_size, self.hidden_neurons, activation='tanh', inner_activation='tanh', truncate_gradient=self.history_length))
-        model.add(Dense(self.hidden_neurons, self.nb_actions, activation='linear'))
+        model.add(GRU(self.hidden_neurons, input_dim=state_size, activation='tanh', inner_activation='tanh'))
+        model.add(Dense(self.nb_actions, activation='linear'))
 
         return model

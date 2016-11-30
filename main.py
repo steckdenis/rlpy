@@ -201,8 +201,11 @@ if __name__ == '__main__':
         )
 
     # Perform simulation steps
-    episodes = world.run(model, learning, EPISODES, MAX_TIMESTEPS, BATCH_SIZE)
+    print("running world:")
+    episodes = world.run(model, learning, EPISODES, MAX_TIMESTEPS, BATCH_SIZE) #,verbose=True)
 
+    print("ran world")
+    
     # Plot the cumulative reward of all the episodes
     plt.figure()
     plt.plot([e.cumulative_reward for e in episodes], '.')

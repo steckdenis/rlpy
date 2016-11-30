@@ -7,10 +7,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,8 +54,9 @@ class KerasNnetModel(AbstractModel):
         if self._model is None:
             self._model = Sequential()
 
-            self._model.add(Dense(len(episodes[0].states[0]), self.hidden_neurons, init='uniform', activation='tanh'))
-            self._model.add(Dense(self.hidden_neurons, self.nb_actions, init='uniform', activation='linear'))
+            self._model.add(Dense(self.hidden_neurons, input_dim=len(episodes[0].states[0]), activation='tanh'))
+            self._model.add(Dense(self.nb_actions, activation='linear'))
+
 
             print('Compiling model...')
             self._model.compile(loss='mse', optimizer='rmsprop')
